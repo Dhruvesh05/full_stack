@@ -13,10 +13,10 @@ app.use(express.urlencoded({ extended: true }));
 
 /* ---------- TEST ROUTE ---------- */
 app.get("/", (req, res) => {
-  res.send("Backend is running properly");
+  res.send("Backend is running properly ✅");
 });
 
-/* ---------- MULTER (MEMORY STORAGE + FILE FILTER) ---------- */
+/* ---------- MULTER CONFIG (MEMORY STORAGE) ---------- */
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
@@ -30,17 +30,17 @@ const upload = multer({
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error("Only PDF, DOC, DOCX files are allowed"));
+      cb(new Error("Only PDF, DOC, DOCX files allowed"));
     }
   },
 });
 
-/* ---------- API ---------- */
+/* ---------- JOB APPLICATION API ---------- */
 app.post("/api/job-application", upload.single("resume"), async (req, res) => {
   try {
     console.log("CONTENT-TYPE:", req.headers["content-type"]);
     console.log("BODY:", req.body);
-    console.log("FILE:", req.file ? req.file.originalname : "NO FILE");
+    console.log("FILE:", req.file?.originalname);
 
     const {
       fullname,
@@ -55,36 +55,44 @@ app.post("/api/job-application", upload.single("resume"), async (req, res) => {
       return res.status(400).json({ message: "Resume file missing" });
     }
 
-    /* ---------- ENV CHECK (IMPORTANT FOR RENDER) ---------- */
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      throw new Error("Email environment variables not set");
+    /* ---------- ENV VALIDATION ---------- */
+    if (
+      !process.env.SMTP_HOST ||
+      !process.env.SMTP_PORT ||
+      !process.env.SMTP_USER ||
+      !process.env.SMTP_PASS
+    ) {
+      throw new Error("SMTP environment variables missing");
     }
 
-    /* ---------- MAIL CONFIG ---------- */
+    /* ---------- BREVO SMTP CONFIG ---------- */
     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT),
+      secure: false, // IMPORTANT for Brevo (587)
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
       },
     });
 
+    // Verify SMTP connection
     await transporter.verify();
 
+    /* ---------- MAIL OPTIONS ---------- */
     const mailOptions = {
-      from: `"Careers - Shubh Construction" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER,
+      from: `"Careers - Shubh Construction" <${process.env.SMTP_USER}>`,
+      to: process.env.SMTP_USER, // company mail
+      replyTo: email, // candidate mail
       subject: `New Job Application - ${fullname}`,
       html: `
         <h2>New Job Application</h2>
         <p><b>Name:</b> ${fullname}</p>
         <p><b>Email:</b> ${email}</p>
         <p><b>Mobile:</b> ${mobile}</p>
-        <p><b>Experience:</b> ${total_experience} years</p>
+        <p><b>Total Experience:</b> ${total_experience} years</p>
         <p><b>Current Employer:</b> ${current_employer}</p>
-        <p><b>Position:</b> ${position}</p>
+        <p><b>Applied Position:</b> ${position}</p>
       `,
       attachments: [
         {
@@ -96,12 +104,15 @@ app.post("/api/job-application", upload.single("resume"), async (req, res) => {
 
     await transporter.sendMail(mailOptions);
 
-    return res.status(200).json({ message: "Application sent successfully" });
+    return res.status(200).json({
+      message: "Job application submitted successfully ✅",
+    });
   } catch (error) {
-    console.error("MAIL ERROR 👉", error.message);
+    console.error("MAIL ERROR 👉", error);
 
     return res.status(500).json({
-      message: error.message || "Mail failed",
+      message: "Mail sending failed ❌",
+      error: error.message,
     });
   }
 });
@@ -109,5 +120,5 @@ app.post("/api/job-application", upload.single("resume"), async (req, res) => {
 /* ---------- SERVER ---------- */
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Backend running on port ${PORT}`);
+  console.log(`🚀 Backend running on port ${PORT}`);
 });
