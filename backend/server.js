@@ -24,17 +24,20 @@ const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    const allowed = [
-      "application/pdf",
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    ];
-    allowed.includes(file.mimetype)
-      ? cb(null, true)
-      : cb(new Error("Only PDF/DOC/DOCX allowed"));
-  },
-});
+    const ext = file.originalname.toLowerCase();
 
+    if (
+      ext.endsWith(".pdf") ||
+      ext.endsWith(".doc") ||
+      ext.endsWith(".docx")
+    ) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only PDF, DOC, DOCX files allowed"));
+    }
+  },
+
+});
 /* ---------- API ---------- */
 app.post("/api/job-application", upload.single("resume"), async (req, res) => {
   try {
