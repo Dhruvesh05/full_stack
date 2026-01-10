@@ -11,7 +11,7 @@ export default function ClientsCarousel() {
   { id: 4, name: "Birla Cellulose", logo: "birla_cellulose.png" },
   { id: 5, name: "Godrej", logo: "godrej.png" },
   { id: 6, name: "Reliance", logo: "reliance.png" },
-  { id: 7, name: "Daramc", logo: "daramc.png" },
+  { id: 7, name: "Daramic", logo: "Daramic.jpg" },
   { id: 8, name: "DCM shriram", logo: "dcm_shriram.png" },
 { id: 9, name: "Detox India", logo: "detox_india.png" },
 { id: 10, name: "Elantas", logo: "elantas.png" },
