@@ -143,7 +143,7 @@ export default function HeroCarousel() {
           md:mt-6
           md:absolute md:bottom-20
           text-left
-          ${current !== 1 && "pl-50"}
+          ${current !== 1 && "pl-46"}
           md:ml-[8rem]
           ${current !== 1 ? "md:ml-[55%]" : ""}
         `}
