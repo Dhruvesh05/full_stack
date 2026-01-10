@@ -6,48 +6,41 @@ require("dotenv").config();
 
 const app = express();
 
-/* ---------- MIDDLEWARE ---------- */
+/* ---------- CORS ---------- */
 app.use(
   cors({
     origin: "https://shubh-construction.vercel.app",
     methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
   })
 );
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-/* ---------- TEST ROUTE ---------- */
+/* ---------- TEST ---------- */
 app.get("/", (req, res) => {
   res.send("Backend is running properly ✅");
 });
 
-/* ---------- MULTER CONFIG (MEMORY STORAGE) ---------- */
+/* ---------- MULTER (MEMORY) ---------- */
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    const allowedTypes = [
+    const allowed = [
       "application/pdf",
       "application/msword",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     ];
-
-    if (allowedTypes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error("Only PDF, DOC, DOCX files allowed"));
-    }
+    allowed.includes(file.mimetype)
+      ? cb(null, true)
+      : cb(new Error("Only PDF/DOC/DOCX allowed"));
   },
 });
 
-/* ---------- JOB APPLICATION API ---------- */
+/* ---------- API ---------- */
 app.post("/api/job-application", upload.single("resume"), async (req, res) => {
   try {
-    console.log("CONTENT-TYPE:", req.headers["content-type"]);
-    console.log("BODY:", req.body);
-    console.log("FILE:", req.file?.originalname);
+    if (!req.file) {
+      return res.status(400).json({ message: "Resume file missing" });
+    }
 
     const {
       fullname,
@@ -58,43 +51,24 @@ app.post("/api/job-application", upload.single("resume"), async (req, res) => {
       position,
     } = req.body;
 
-    if (!req.file) {
-      return res.status(400).json({ message: "Resume file missing" });
-    }
-
-    /* ---------- ENV VALIDATION ---------- */
-    if (
-      !process.env.SMTP_HOST ||
-      !process.env.SMTP_PORT ||
-      !process.env.SMTP_USER ||
-      !process.env.SMTP_PASS
-    ) {
-      throw new Error("SMTP environment variables missing");
-    }
-
-    /* ---------- BREVO SMTP CONFIG ---------- */
+    /* ---------- SMTP ---------- */
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      secure: false, // MUST be false for 587
+      port: Number(process.env.SMTP_PORT),
+      secure: false,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
       },
-      tls: {
-        rejectUnauthorized: false,
-      },
     });
 
-
-    // Verify SMTP connection
     await transporter.verify();
 
-    /* ---------- MAIL OPTIONS ---------- */
-    const mailOptions = {
+    /* ---------- COMPANY MAIL ---------- */
+    await transporter.sendMail({
       from: `"Careers - Shubh Construction" <${process.env.SMTP_USER}>`,
-      to: process.env.SMTP_USER, // company mail
-      replyTo: email, // candidate mail
+      to: process.env.SMTP_USER,
+      replyTo: email,
       subject: `New Job Application - ${fullname}`,
       html: `
         <h2>New Job Application</h2>
@@ -103,7 +77,7 @@ app.post("/api/job-application", upload.single("resume"), async (req, res) => {
         <p><b>Mobile:</b> ${mobile}</p>
         <p><b>Total Experience:</b> ${total_experience} years</p>
         <p><b>Current Employer:</b> ${current_employer}</p>
-        <p><b>Applied Position:</b> ${position}</p>
+        <p><b>Position:</b> ${position}</p>
       `,
       attachments: [
         {
@@ -111,31 +85,29 @@ app.post("/api/job-application", upload.single("resume"), async (req, res) => {
           content: req.file.buffer,
         },
       ],
-    };
-
-    await transporter.sendMail({
-      from: `"Careers" <${process.env.SMTP_USER}>`,
-      to: email, // user entered email
-      subject: "Job Application Received",
-      html: "<h3>Your application is received</h3>",
-      attachments: [
-        {
-          filename: resume.originalname,
-          path: resume.path,
-        },
-      ],
     });
 
+    /* ---------- USER CONFIRMATION MAIL ---------- */
+    await transporter.sendMail({
+      from: `"Shubh Construction" <${process.env.SMTP_USER}>`,
+      to: email,
+      subject: "Application Received ✅",
+      html: `
+        <p>Hi ${fullname},</p>
+        <p>Thank you for applying at <b>Shubh Construction</b>.</p>
+        <p>Our HR team will contact you if shortlisted.</p>
+        <br />
+        <p>Regards,<br/>Shubh Construction</p>
+      `,
+    });
 
     return res.status(200).json({
       message: "Job application submitted successfully ✅",
     });
   } catch (error) {
     console.error("MAIL ERROR 👉", error);
-
     return res.status(500).json({
       message: "Mail sending failed ❌",
-      error: error.message,
     });
   }
 });
