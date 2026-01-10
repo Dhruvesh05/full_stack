@@ -1,10 +1,11 @@
 const express = require("express");
 const multer = require("multer");
 const cors = require("cors");
-const mailjet = require("node-mailjet");
+const Mailjet = require("node-mailjet");
 require("dotenv").config();
 
 const app = express();
+
 
 app.use(
   cors({
@@ -24,8 +25,8 @@ const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    const ext = file.originalname.toLowerCase();
-    if (ext.endsWith(".pdf") || ext.endsWith(".doc") || ext.endsWith(".docx")) {
+    const allowed = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+    if (allowed.includes(file.mimetype)) {
       cb(null, true);
     } else {
       cb(new Error("Only PDF, DOC, DOCX files allowed"));
@@ -33,33 +34,52 @@ const upload = multer({
   },
 });
 
-const mj = mailjet.connect(
+const mailjet = Mailjet.apiConnect(
   process.env.MJ_APIKEY_PUBLIC,
   process.env.MJ_APIKEY_PRIVATE
 );
 
 app.post("/api/job-application", upload.single("resume"), async (req, res) => {
   try {
-    if (!req.file) return res.status(400).json({ message: "Resume file missing" });
+    if (!req.file) {
+      return res.status(400).json({ message: "Resume file missing" });
+    }
 
-    const { fullname, email, mobile, total_experience, current_employer, position } = req.body;
+    const {
+      fullname,
+      email,
+      mobile,
+      total_experience,
+      current_employer,
+      position,
+    } = req.body;
 
-    if (!fullname || !email || !mobile || !total_experience || !current_employer || !position)
-      return res.status(400).json({ message: "All fields are required." });
+    if (!fullname || !email || !mobile || !total_experience || !current_employer || !position) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
-    if (!/^\S+@\S+\.\S+$/.test(email)) return res.status(400).json({ message: "Invalid email address." });
-    if (!/^\+?\d{10,}$/.test(mobile)) return res.status(400).json({ message: "Invalid mobile number." });
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      return res.status(400).json({ message: "Invalid email address" });
+    }
 
-    const attachment = Buffer.from(req.file.buffer).toString("base64");
+    const attachmentBase64 = req.file.buffer.toString("base64");
 
-    const companyMail = {
+    await mailjet.post("send", { version: "v3.1" }).request({
       Messages: [
         {
-          From: { Email: process.env.MJ_SENDER_EMAIL, Name: "Shubh Construction" },
-          To: [{ Email: process.env.RECEIVER_EMAIL, Name: "HR Team" }],
+          From: {
+            Email: process.env.MJ_SENDER_EMAIL,
+            Name: "Shubh Construction",
+          },
+          To: [
+            {
+              Email: process.env.RECEIVER_EMAIL,
+              Name: "HR Team",
+            },
+          ],
           Subject: `New Job Application - ${fullname}`,
           HTMLPart: `
-            <h2>New Job Application</h2>
+            <h3>New Job Application</h3>
             <p><b>Name:</b> ${fullname}</p>
             <p><b>Email:</b> ${email}</p>
             <p><b>Mobile:</b> ${mobile}</p>
@@ -71,18 +91,26 @@ app.post("/api/job-application", upload.single("resume"), async (req, res) => {
             {
               ContentType: req.file.mimetype,
               Filename: req.file.originalname,
-              Base64Content: attachment,
+              Base64Content: attachmentBase64,
             },
           ],
         },
       ],
-    };
+    });
 
-    const applicantMail = {
+    await mailjet.post("send", { version: "v3.1" }).request({
       Messages: [
         {
-          From: { Email: process.env.MJ_SENDER_EMAIL, Name: "Shubh Construction" },
-          To: [{ Email: email, Name: fullname }],
+          From: {
+            Email: process.env.MJ_SENDER_EMAIL,
+            Name: "Shubh Construction",
+          },
+          To: [
+            {
+              Email: email,
+              Name: fullname,
+            },
+          ],
           Subject: "Application Received",
           HTMLPart: `
             <p>Hi ${fullname},</p>
@@ -93,17 +121,21 @@ app.post("/api/job-application", upload.single("resume"), async (req, res) => {
           `,
         },
       ],
-    };
+    });
 
-    await mj.post("send", { version: "v3.1" }).request(companyMail);
-    await mj.post("send", { version: "v3.1" }).request(applicantMail);
+    return res.status(200).json({
+      message: "Job application submitted successfully",
+    });
 
-    return res.status(200).json({ message: "Job application submitted successfully" });
-  } catch (err) {
-    console.error("MAILJET ERROR:", err);
-    return res.status(500).json({ message: "Failed to send job application.", error: err.message });
+  } catch (error) {
+    console.error("MAILJET ERROR 👉", error);
+    return res.status(500).json({
+      message: "Failed to send job application",
+    });
   }
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Backend running on port ${PORT}`);
+});
