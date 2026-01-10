@@ -17,12 +17,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  res.send("Backend is running properly ✅");
+  res.send("Backend is running properly");
 });
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
+  limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const ext = file.originalname.toLowerCase();
     if (ext.endsWith(".pdf") || ext.endsWith(".doc") || ext.endsWith(".docx")) {
@@ -83,7 +83,7 @@ app.post("/api/job-application", upload.single("resume"), async (req, res) => {
         {
           From: { Email: process.env.MJ_SENDER_EMAIL, Name: "Shubh Construction" },
           To: [{ Email: email, Name: fullname }],
-          Subject: "Application Received ✅",
+          Subject: "Application Received",
           HTMLPart: `
             <p>Hi ${fullname},</p>
             <p>Thank you for applying at <b>Shubh Construction</b>.</p>
@@ -98,7 +98,7 @@ app.post("/api/job-application", upload.single("resume"), async (req, res) => {
     await mj.post("send", { version: "v3.1" }).request(companyMail);
     await mj.post("send", { version: "v3.1" }).request(applicantMail);
 
-    return res.status(200).json({ message: "Job application submitted successfully ✅" });
+    return res.status(200).json({ message: "Job application submitted successfully" });
   } catch (err) {
     console.error("MAILJET ERROR:", err);
     return res.status(500).json({ message: "Failed to send job application.", error: err.message });
@@ -106,4 +106,4 @@ app.post("/api/job-application", upload.single("resume"), async (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Backend running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
