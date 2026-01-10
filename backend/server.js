@@ -49,6 +49,21 @@ app.post("/api/job-application", upload.single("resume"), async (req, res) => {
       position,
     } = req.body;
 
+    // Check for missing required fields
+    if (!fullname || !email || !mobile || !total_experience || !current_employer || !position) {
+      return res.status(400).json({ message: "All fields are required." });
+    }
+
+    // Validate email format (basic)
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      return res.status(400).json({ message: "Invalid email address." });
+    }
+
+    // Validate mobile (basic, 10+ digits)
+    if (!/^\+?\d{10,}$/.test(mobile)) {
+      return res.status(400).json({ message: "Invalid mobile number." });
+    }
+
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT),
@@ -59,48 +74,65 @@ app.post("/api/job-application", upload.single("resume"), async (req, res) => {
       },
     });
 
-    await transporter.sendMail({
-      from: `"Careers - Shubh Construction" <${process.env.SMTP_USER}>`,
-      to: process.env.SMTP_USER,
-      replyTo: email,
-      subject: `New Job Application - ${fullname}`,
-      html: `
-        <h2>New Job Application</h2>
-        <p><b>Name:</b> ${fullname}</p>
-        <p><b>Email:</b> ${email}</p>
-        <p><b>Mobile:</b> ${mobile}</p>
-        <p><b>Total Experience:</b> ${total_experience} years</p>
-        <p><b>Current Employer:</b> ${current_employer}</p>
-        <p><b>Position:</b> ${position}</p>
-      `,
-      attachments: [
-        {
-          filename: req.file.originalname,
-          content: req.file.buffer,
-        },
-      ],
-    });
+    try {
+      await transporter.verify();
+    } catch (smtpErr) {
+      console.error("SMTP connection error:", smtpErr);
+      return res.status(500).json({ message: "SMTP connection failed. Check mail server credentials." });
+    }
 
-    await transporter.sendMail({
-      from: `"Shubh Construction" <${process.env.SMTP_USER}>`,
-      to: email,
-      subject: "Application Received ✅",
-      html: `
-        <p>Hi ${fullname},</p>
-        <p>Thank you for applying at <b>Shubh Construction</b>.</p>
-        <p>Our HR team will contact you if shortlisted.</p>
-        <br />
-        <p>Regards,<br/>Shubh Construction</p>
-      `,
-    });
+    try {
+      await transporter.sendMail({
+        from: `"Careers - Shubh Construction" <${process.env.SMTP_USER}>`,
+        to: process.env.SMTP_USER,
+        replyTo: email,
+        subject: `New Job Application - ${fullname}`,
+        html: `
+          <h2>New Job Application</h2>
+          <p><b>Name:</b> ${fullname}</p>
+          <p><b>Email:</b> ${email}</p>
+          <p><b>Mobile:</b> ${mobile}</p>
+          <p><b>Total Experience:</b> ${total_experience} years</p>
+          <p><b>Current Employer:</b> ${current_employer}</p>
+          <p><b>Position:</b> ${position}</p>
+        `,
+        attachments: [
+          {
+            filename: req.file.originalname,
+            content: req.file.buffer,
+          },
+        ],
+      });
+    } catch (mailErr) {
+      console.error("Error sending company mail:", mailErr);
+      return res.status(500).json({ message: "Failed to send application to company." });
+    }
+
+    try {
+      await transporter.sendMail({
+        from: `"Shubh Construction" <${process.env.SMTP_USER}>`,
+        to: email,
+        subject: "Application Received ✅",
+        html: `
+          <p>Hi ${fullname},</p>
+          <p>Thank you for applying at <b>Shubh Construction</b>.</p>
+          <p>Our HR team will contact you if shortlisted.</p>
+          <br />
+          <p>Regards,<br/>Shubh Construction</p>
+        `,
+      });
+    } catch (mailErr) {
+      console.error("Error sending confirmation mail:", mailErr);
+      // Don't fail the whole request if user mail fails
+    }
 
     return res.status(200).json({
       message: "Job application submitted successfully ✅",
     });
   } catch (error) {
-    console.error("MAIL ERROR 👉", error);
+    console.error("MAIL ERROR:", error);
     return res.status(500).json({
-      message: "Mail sending failed ❌",
+      message: error && error.message ? error.message : "Mail sending failed ❌",
     });
   }
 });
