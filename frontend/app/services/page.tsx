@@ -109,7 +109,7 @@ const page = () => {
             >
               <div
                 key={index}
-                className="mx-auto md:min-h-102 md:max-h-102 flex flex-col gap-3 bg-white border border-gray-300 leading-relaxed rounded-lg p-6 mb-8 hover:shadow-xl hover:scale-105 transition-all duration-300"
+                className="mx-auto outline outline-1 outline-red-700 outline-offset-[-8px] md:min-h-102 md:max-h-102 flex flex-col gap-3 bg-white border border-gray-300 leading-relaxed rounded-lg p-6 mb-8 hover:shadow-xl hover:scale-105 transition-all duration-300"
               >
                 <service.icon
                   aria-hidden="true"

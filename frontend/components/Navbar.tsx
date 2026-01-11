@@ -50,7 +50,7 @@ export default function Navbar() {
     <header>
       <nav
         aria-label="Main navigation"
-        className=" text-primary-foreground fixed top-0 left-0 text-white right-0 z-50 shadow-md border-b border-black/20"
+        className="bg-white/70 backdrop-blur-md text-primary-foreground fixed top-0 left-0 text-white right-0 z-50 shadow-md border-b border-black/20"
         style={{ backgroundImage: "url('/bgc.jpg')" }}
       >
         <div className="container mx-auto px-4">

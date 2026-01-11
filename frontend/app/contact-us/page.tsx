@@ -199,7 +199,7 @@ const Page = () => {
                 </>
               );
 
-              // 👉 Phone: NO Link
+              // Phone: NO Link
               if (detail.title === "Phone") {
                 return (
                   <div className="flex gap-4 pr-15 md:pr-40" key={index}>
@@ -208,7 +208,7 @@ const Page = () => {
                 );
               }
 
-              // 👉 Others: use Link
+              // Others: use Link
               return (
                 <Link
                   href={detail.link}

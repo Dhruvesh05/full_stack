@@ -119,7 +119,6 @@ const ProjectCard = () => {
   return (
     <section
       className="grid grid-cols-1 gap-8 px-4 py-12 md:grid-cols-2 lg:grid-cols-3"
-      style={{ backgroundImage: "url('/bgc.jpg')" }}
     >
       {Projects.map((item, index) => (
         <div

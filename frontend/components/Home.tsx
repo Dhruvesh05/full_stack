@@ -126,11 +126,11 @@ function ServicesSection() {
         <h2 className={`text-4xl font-bold text-center mb-12 text-black transition-all duration-700 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'
         }`}>Our Services</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"        >
           {services.map((s, index) => (
             <div 
               key={s.title}
-              className={`bg-white p-6 rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all duration-700 ${
+              className={`bg-white p-6 rounded-lg shadow-md hover:shadow-xl  hover:scale-105 transition-all duration-700 ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
               }`}
               style={{ transitionDelay: `${index * 100}ms` }}

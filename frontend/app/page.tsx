@@ -101,7 +101,7 @@ const page = () => {
               key={index}
             >
               <div
-                className="py-12  md:min-h-96 lg:min-h-78 bg-white border-[1] shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 border-gray-200 rounded-xl px-6 flex flex-col gap-4"
+                className="py-12 outline outline-1 outline-red-700 outline-offset-[-8px]  md:min-h-96 lg:min-h-78 bg-white border-[1] shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 border-gray-200 rounded-xl px-6 flex flex-col gap-4"
                 key={index}
               >
                 <item.icon className="p-3 h-14 w-14 text-red-700 rounded-lg bg-red-100" />
@@ -115,7 +115,7 @@ const page = () => {
           <div className=" flex items-center justify-center">
             <Link
               href="/services"
-              className="text-center mt-6 shadow-xl bg-white px-6 py-2 rounded-lg border-[1] border-gray-200 active:scale-95 hover:scale-105 hover:shadow-xl hover:bg-red-700 hover:text-white transition-all duration-400"
+              className="text-center mt-6 shadow-xl border-[1px] border-red-700 bg-white px-6 py-2 rounded-lg border-[1] border-gray-200 active:scale-95 hover:scale-105 hover:shadow-xl hover:bg-red-700 hover:text-white transition-all duration-400"
             >
               View All Services
             </Link>

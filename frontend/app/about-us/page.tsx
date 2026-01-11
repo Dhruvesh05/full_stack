@@ -104,7 +104,8 @@ const Page = () => {
             >
               <div
                 key={section.title}
-                className="bg-white md:min-h-105 lg:min-h-90 min-h-12 p-8 rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300"
+                className="bg-white md:min-h-105 lg:min-h-90 min-h-12 p-8 rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300
+                outline outline-2 outline-red-700 outline-offset-[-8px]"
               >
                 <section.icon
                   aria-hidden="true"
@@ -151,7 +152,7 @@ const Page = () => {
                 >
                   <TiTickOutline
                     aria-hidden="true"
-                    className="text-red-600 text-5xl bg-red-50 p-3 rounded-full"
+                    className="text-red-600 text-5xl bg-red-100 p-3 rounded-full"
                   />
                   <h3 className="text-xl text-red-700 font-semibold">
                     {value.title}
