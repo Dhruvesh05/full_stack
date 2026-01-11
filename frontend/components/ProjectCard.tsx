@@ -122,7 +122,7 @@ const ProjectCard = () => {
     >
       {Projects.map((item, index) => (
         <div
-          className="relative shadow-xl bg-white border-[1] border-gray-300 hover:scale-105 hover:shadow-2xl transition-all duration-300 rounded-xl h-115 overflow-hidden"
+          className="relative shadow-xl bg-white border-[1] border-gray-300 hover:scale-105 hover:shadow-2xl transition-all duration-300 rounded-xl h-108 overflow-hidden"
           key={index}
         >
           <Image
@@ -130,11 +130,11 @@ const ProjectCard = () => {
             alt={`${item.name} – ${item.type} construction project by Shubh Construction`}
             width={600}
             height={400}
-            className="object-cover w-full h-2/3"
+            className="object-cover w-full h-2/3 cursor-pointer"
           />
           <div className="p-6 space-y-4">
             <h3 className="font-bold text-xl">{item.name}</h3>
-            <div className="absolute flex space-x-2 items-center bottom-10">
+            <div className="absolute flex space-x-2 items-center bottom-6">
               <MapPin size={24} color="red" />
               <p className="text-gray-500 text-sm">{item.location}</p>
             </div>
