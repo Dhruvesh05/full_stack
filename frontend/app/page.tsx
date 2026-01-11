@@ -93,7 +93,7 @@ const page = () => {
             </p>
           </div>
         </AnimateOnScroll>
-        <div className="grid grid-cols-1 gap-8  md:gap-4 lg:grid-cols-4 px-4 py-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-8 md:gap-4 lg:grid-cols-4 px-4 py-6 md:grid-cols-2">
           {HomeServices.map((item, index) => (
             <AnimateOnScroll
               direction="up"
@@ -150,7 +150,10 @@ const page = () => {
 
       <ClientCarousel />
 
-      <section className="bg-white grid grid-cols-1 md:grid-cols-2 gap-10 px-4 py-16 md:py-24">
+      <section
+        className="bg-white grid grid-cols-1 md:grid-cols-2 gap-10 px-4 py-16 md:py-24"
+        style={{ backgroundImage: "url('/bgc.jpg')" }}
+      >
         <AnimateOnScroll direction="right" delay={0.6}>
           <div className=" space-y-6">
             <h2 className="font-bold text-3xl md:text-4xl ">Why Choose Us</h2>

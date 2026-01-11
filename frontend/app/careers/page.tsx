@@ -81,7 +81,10 @@ const Page = () => {
         </AnimateOnScroll>
       </section>
 
-      <section className="py-14 px-4 md:py-18 md:px-12 space-y-12 grid grid-cols-1 md:grid-cols-2 md:gap-12">
+      <section
+        className="py-14 px-4 md:py-18 md:px-12 space-y-12 grid grid-cols-1 md:grid-cols-2 md:gap-12"
+        style={{ backgroundImage: "url('/bgc.jpg')" }}
+      >
         {/* Left Content */}
         <AnimateOnScroll direction="right" delay={0.2}>
           <div className="space-y-6">
@@ -89,28 +92,47 @@ const Page = () => {
               Build Your Career With Us
             </h2>
             <p className="text-gray-600 leading-relaxed">
-              At <span className="font-semibold text-gray-900">Shubh Construction</span>,
-              we are hiring civil engineers, supervisors, and project managers
+              At{" "}
+              <span className="font-semibold text-gray-900">
+                Shubh Construction
+              </span>
+              , we are hiring civil engineers, supervisors, and project managers
               for ongoing industrial and commercial construction projects in
               Bharuch, Gujarat.
             </p>
             <ul className="space-y-3 text-gray-700">
-              <li className="flex gap-4"><CheckCircle2 className="text-red-700"/> Work on large-scale projects</li>
-              <li className="flex gap-4"><CheckCircle2 className="text-red-700"/> Growth-focused environment</li>
-              <li className="flex gap-4"><CheckCircle2 className="text-red-700"/> Experienced leadership & team</li>
-              <li className="flex gap-4"><CheckCircle2 className="text-red-700"/> Competitive compensation</li>
+              <li className="flex gap-4">
+                <CheckCircle2 className="text-red-700" /> Work on large-scale
+                projects
+              </li>
+              <li className="flex gap-4">
+                <CheckCircle2 className="text-red-700" /> Growth-focused
+                environment
+              </li>
+              <li className="flex gap-4">
+                <CheckCircle2 className="text-red-700" /> Experienced leadership
+                & team
+              </li>
+              <li className="flex gap-4">
+                <CheckCircle2 className="text-red-700" /> Competitive
+                compensation
+              </li>
             </ul>
           </div>
           <section className="mt-10 space-y-6">
-            <h2 className="text-2xl font-bold md:text-3xl">Frequently Asked Questions</h2>
+            <h2 className="text-2xl font-bold md:text-3xl">
+              Frequently Asked Questions
+            </h2>
             <div>
-              <strong>Do you offer construction jobs in Bharuch?</strong><br />
+              <strong>Do you offer construction jobs in Bharuch?</strong>
+              <br />
               <p className="text-gray-600 mt-2">
                 Yes, we hire for multiple on-site roles in Bharuch, Gujarat.
               </p>
             </div>
             <div>
-              <strong>How can I apply?</strong><br />
+              <strong>How can I apply?</strong>
+              <br />
               <p className="text-gray-600 mt-2">
                 Fill out the form and upload your resume.
               </p>
@@ -212,10 +234,14 @@ const Page = () => {
               Submit Your Application
             </button>
             {message && (
-              <div className="text-green-600 font-semibold text-center mt-2">{message}</div>
+              <div className="text-green-600 font-semibold text-center mt-2">
+                {message}
+              </div>
             )}
             {error && (
-              <div className="text-red-600 font-semibold text-center mt-2">{error}</div>
+              <div className="text-red-600 font-semibold text-center mt-2">
+                {error}
+              </div>
             )}
           </form>
         </AnimateOnScroll>

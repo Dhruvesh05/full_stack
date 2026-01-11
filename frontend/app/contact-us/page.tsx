@@ -68,21 +68,26 @@ const Page = () => {
   return (
     <main>
       {/* Hero Section */}
-                  <section className="bg-[#1c1f26] pt-33 pb-16 bg-center bg-cover bg-no-repeat"
-  style={{ backgroundImage: "url('/bg4.png')" }}>
-                    <AnimateOnScroll direction="down" delay={0.2}>
-                    <div className="container mx-auto px-4">
-                      <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                        Contact Us
-                      </h1>
-                      <p className="text-white/90 text-lg md:text-xl max-w-2xl">
-                        Get in touch with us
-                      </p>
-                    </div>
-                    </AnimateOnScroll>
-                  </section>
+      <section
+        className="bg-[#1c1f26] pt-33 pb-16 bg-center bg-cover bg-no-repeat"
+        style={{ backgroundImage: "url('/bg4.png')" }}
+      >
+        <AnimateOnScroll direction="down" delay={0.2}>
+          <div className="container mx-auto px-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Contact Us
+            </h1>
+            <p className="text-white/90 text-lg md:text-xl max-w-2xl">
+              Get in touch with us
+            </p>
+          </div>
+        </AnimateOnScroll>
+      </section>
       {/* Send a Message and Contact Info */}
-      <section className = "py-14 px-4 md:py-18 md:px-12 space-y-12 grid grid-cols-1 md:grid-cols-2 md:gap-12">
+      <section
+        className="py-14 px-4 md:py-18 md:px-12 space-y-12 grid grid-cols-1 md:grid-cols-2 md:gap-12"
+        style={{ backgroundImage: "url('/bgc.jpg')" }}
+      >
         <AnimateOnScroll direction="right" delay={0.4}>
           <form
             className="flex flex-col gap-6"
@@ -94,7 +99,9 @@ const Page = () => {
             <address className="not-italic grid gap-6">
               {/* Full Name */}
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-bold text-gray-700">Full Name</label>
+                <label className="text-sm font-bold text-gray-700">
+                  Full Name
+                </label>
                 <input
                   type="text"
                   name="name"
@@ -105,7 +112,9 @@ const Page = () => {
               </div>
               {/* Email Address */}
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-bold text-gray-700">Email Address</label>
+                <label className="text-sm font-bold text-gray-700">
+                  Email Address
+                </label>
                 <input
                   type="email"
                   name="email"
@@ -116,7 +125,9 @@ const Page = () => {
               </div>
               {/* Phone Number */}
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-bold text-gray-700">Phone Number</label>
+                <label className="text-sm font-bold text-gray-700">
+                  Phone Number
+                </label>
                 <input
                   type="text"
                   name="phone"
@@ -126,7 +137,9 @@ const Page = () => {
               </div>
               {/* Your Message */}
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-bold text-gray-700">Your Message</label>
+                <label className="text-sm font-bold text-gray-700">
+                  Your Message
+                </label>
                 <textarea
                   name="message"
                   placeholder="Your Message....."
@@ -136,7 +149,9 @@ const Page = () => {
                 />
               </div>
             </address>
-            {success && <div className="text-green-600 font-semibold">{success}</div>}
+            {success && (
+              <div className="text-green-600 font-semibold">{success}</div>
+            )}
             {error && <div className="text-red-600 font-semibold">{error}</div>}
             <button
               type="submit"
@@ -147,92 +162,91 @@ const Page = () => {
             </button>
           </form>
         </AnimateOnScroll>
-              <AnimateOnScroll direction="left" delay={0.6}>
-              <div className="flex flex-col gap-6 ">
-                <h2 className="text-3xl font-bold">
-                  Get in Touch
-                </h2>
-                <h2 className="text-gray-500">
-                  We believe every successful project begins with clear communication—get in touch and let’s discuss your vision.
-                </h2>
-                {ContactDetails.map((detail, index) => {
-  const Content = (
-    <>
-      <detail.icon className="text-5xl p-3 shrink-0 text-red-700 bg-red-100 rounded-lg hover:scale-115 transition-all duration-300" />
+        <AnimateOnScroll direction="left" delay={0.6}>
+          <div className="flex flex-col gap-6 ">
+            <h2 className="text-3xl font-bold">Get in Touch</h2>
+            <h2 className="text-gray-500">
+              We believe every successful project begins with clear
+              communication—get in touch and let’s discuss your vision.
+            </h2>
+            {ContactDetails.map((detail, index) => {
+              const Content = (
+                <>
+                  <detail.icon className="text-5xl p-3 shrink-0 text-red-700 bg-red-100 rounded-lg hover:scale-115 transition-all duration-300" />
 
-      <div>
-        <h3 className="font-bold mb-1">{detail.title}</h3>
+                  <div>
+                    <h3 className="font-bold mb-1">{detail.title}</h3>
 
-        {detail.title === "Phone" ? (
-          <>
-            <p className="text-gray-500">
-              <a href="tel:+919601940724">+91 96019 40724</a>
-            </p>
-            <p className="text-gray-500">
-              <a href="tel:+919879227811">+91 98792 27811</a>
-            </p>
-          </>
-        ) : (
-          <p className={`text-gray-500 ${index === 0 ? "pr-25 md:pr-50" : ""}`}>
-            {detail.value}
-          </p>
-        )}
-      </div>
-    </>
-  );
+                    {detail.title === "Phone" ? (
+                      <>
+                        <p className="text-gray-500">
+                          <a href="tel:+919601940724">+91 96019 40724</a>
+                        </p>
+                        <p className="text-gray-500">
+                          <a href="tel:+919879227811">+91 98792 27811</a>
+                        </p>
+                      </>
+                    ) : (
+                      <p
+                        className={`text-gray-500 ${
+                          index === 0 ? "pr-25 md:pr-50" : ""
+                        }`}
+                      >
+                        {detail.value}
+                      </p>
+                    )}
+                  </div>
+                </>
+              );
 
-  // 👉 Phone: NO Link
-  if (detail.title === "Phone") {
-    return (
-      <div className="flex gap-4 pr-15 md:pr-40" key={index}>
-        {Content}
-      </div>
-    );
-  }
+              // 👉 Phone: NO Link
+              if (detail.title === "Phone") {
+                return (
+                  <div className="flex gap-4 pr-15 md:pr-40" key={index}>
+                    {Content}
+                  </div>
+                );
+              }
 
-  // 👉 Others: use Link
-  return (
-    <Link
-      href={detail.link}
-      rel="noopener noreferrer"
-      className="flex gap-4 pr-15 md:pr-40"
-      target="_blank"
-      key={index}
-    >
-      {Content}
-    </Link>
-  );
-})}
-
-              </div>
-              <div className="h-100 rounded-2xl overflow-hidden mt-6 hover:scale-105 shadow-xl hover:shadow-2xl transition-all duration-300">
-  <iframe
-    title="Office Location"
-    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3705.489012345678!2d72.9799144!3d21.7271201!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395f89fcb679fb4d%3A0xab516380da2eac86!2sNarayan%20Luxuria%20Apartments!5e0!3m2!1sen!2sin!4v1702123456789"
-    width="100%"
-    height="100%"
-    style={{ border: 0 }}
-    loading="lazy"
-    referrerPolicy="no-referrer-when-downgrade"
-  />
-</div>
-
-              </AnimateOnScroll>
+              // 👉 Others: use Link
+              return (
+                <Link
+                  href={detail.link}
+                  rel="noopener noreferrer"
+                  className="flex gap-4 pr-15 md:pr-40"
+                  target="_blank"
+                  key={index}
+                >
+                  {Content}
+                </Link>
+              );
+            })}
+          </div>
+          <div className="h-100 rounded-2xl overflow-hidden mt-6 hover:scale-105 shadow-xl hover:shadow-2xl transition-all duration-300">
+            <iframe
+              title="Office Location"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3705.489012345678!2d72.9799144!3d21.7271201!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395f89fcb679fb4d%3A0xab516380da2eac86!2sNarayan%20Luxuria%20Apartments!5e0!3m2!1sen!2sin!4v1702123456789"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
+        </AnimateOnScroll>
       </section>
       {/*Ready to Build */}
       <section className="bg-gray-50 text-center py-14 px-6 flex flex-col gap-4">
         <AnimateOnScroll direction="up" delay={0.2}>
-        <h2 className="font-bold text-3xl">
-          Ready to Build?
-        </h2>
-        <p className="text-gray-500 text-lg">
-          Get in touch with our experienced construction team and bring your ideas to life with confidence and precision.
-        </p>
+          <h2 className="font-bold text-3xl">Ready to Build?</h2>
+          <p className="text-gray-500 text-lg">
+            Get in touch with our experienced construction team and bring your
+            ideas to life with confidence and precision.
+          </p>
         </AnimateOnScroll>
       </section>
-     
     </main>
-  )
+  );
 }
 
 export default Page

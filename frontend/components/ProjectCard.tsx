@@ -117,7 +117,10 @@ const ProjectCard = () => {
     ];
 
   return (
-    <section className="grid grid-cols-1 gap-8 px-4 py-12 md:grid-cols-2 lg:grid-cols-3">
+    <section
+      className="grid grid-cols-1 gap-8 px-4 py-12 md:grid-cols-2 lg:grid-cols-3"
+      style={{ backgroundImage: "url('/bgc.jpg')" }}
+    >
       {Projects.map((item, index) => (
         <div
           className="relative shadow-xl bg-white border-[1] border-gray-300 hover:scale-105 hover:shadow-2xl transition-all duration-300 rounded-xl h-115 overflow-hidden"

@@ -61,95 +61,136 @@ const page = () => {
     ];
   return (
     <main>
-         {/* Hero Section */}
-        
-      <section className="bg-[#1c1f26] pt-33 pb-16 bg-center bg-cover bg-no-repeat"
-  style={{ backgroundImage: "url('/bg4.png')" }}>
-         <AnimateOnScroll direction="down" delay={0.2}>
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Our Services
-          </h1>
-          <p className="text-white/90 text-lg md:text-xl max-w-2xl">
-            Comprehensive civil construction solutions
-          </p>
-        </div>
+      {/* Hero Section */}
+
+      <section
+        className="bg-[#1c1f26] pt-33 pb-16 bg-center bg-cover bg-no-repeat"
+        style={{ backgroundImage: "url('/bg4.png')" }}
+      >
+        <AnimateOnScroll direction="down" delay={0.2}>
+          <div className="container mx-auto px-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Our Services
+            </h1>
+            <p className="text-white/90 text-lg md:text-xl max-w-2xl">
+              Comprehensive civil construction solutions
+            </p>
+          </div>
         </AnimateOnScroll>
       </section>
-        
+
       {/* Services Section */}
-        <section className="py-16 md:py-24" aria-labelledby="services-offer-heading">
-            <AnimateOnScroll direction="up" delay={0.2}>
-            <div className="text-center px-2 md:px-35 lg:px-70">
-           <h2 className="text-3xl md:text-4xl font-bold mb-4" id="services-offer-heading">
-  What We Offer
-</h2>
+      <section
+        className="py-16 md:py-24"
+        aria-labelledby="services-offer-heading"
+        style={{ backgroundImage: "url('/bgc.jpg')" }}
+      >
+        <AnimateOnScroll direction="up" delay={0.2}>
+          <div className="text-center px-2 md:px-35 lg:px-70">
+            <h2
+              className="text-3xl md:text-4xl font-bold mb-4"
+              id="services-offer-heading"
+            >
+              What We Offer
+            </h2>
             <p className="text-gray-500 text-lg leading-relaxed mx-auto">
-                At Shubh Construction, we specialize in a wide range of civil construction services tailored to meet the diverse needs of our clients.
+              At Shubh Construction, we specialize in a wide range of civil
+              construction services tailored to meet the diverse needs of our
+              clients.
             </p>
-            </div>
+          </div>
+        </AnimateOnScroll>
+        <div className="container mx-auto px-4 mt-12 grid md:grid-cols-2 lg:grid-cols-3 md:gap-x-8">
+          {services.map((service, index) => (
+            <AnimateOnScroll
+              direction="up"
+              delay={0.2 + index * 0.1}
+              key={index}
+            >
+              <div
+                key={index}
+                className="mx-auto md:min-h-102 md:max-h-102 flex flex-col gap-3 bg-white border border-gray-300 leading-relaxed rounded-lg p-6 mb-8 hover:shadow-xl hover:scale-105 transition-all duration-300"
+              >
+                <service.icon
+                  aria-hidden="true"
+                  className="text-red-600 text-6xl bg-red-100 p-4 rounded-md mr-4"
+                />
+                <h3 className="text-2xl text-red-700 font-bold">
+                  {service.title}
+                </h3>
+                <p className="text-gray-500 mb-4">{service.description}</p>
+                <ul className="list-disc list-inside text-gray-500 marker:text-red-600">
+                  {service.points.map((point, idx) => (
+                    <li key={idx}>{point}</li>
+                  ))}
+                </ul>
+              </div>
             </AnimateOnScroll>
-            <div className="container mx-auto px-4 mt-12 grid md:grid-cols-2 lg:grid-cols-3 md:gap-x-8">
-                {services.map((service, index) => (
-                    <AnimateOnScroll direction="up" delay={0.2+ index * 0.1} key={index}>
-                    <div key={index} className="mx-auto md:min-h-102 md:max-h-102 flex flex-col gap-3 bg-white border border-gray-300 leading-relaxed rounded-lg p-6 mb-8 hover:shadow-xl hover:scale-105 transition-all duration-300">
-                            <service.icon aria-hidden="true" className="text-red-600 text-6xl bg-red-100 p-4 rounded-md mr-4" />
-                            <h3 className="text-2xl text-red-700 font-bold">{service.title}</h3>
-                        <p className="text-gray-500 mb-4">{service.description}</p>
-                        <ul className="list-disc list-inside text-gray-500 marker:text-red-600">
-                            {service.points.map((point, idx) => (
-                                <li key={idx}>{point}</li>
-                            ))}
-                        </ul>
-                    </div>
-                    </AnimateOnScroll>
-                ))}
-            </div>
-        </section>
+          ))}
+        </div>
+      </section>
 
-        {/*Process Section */}
+      {/*Process Section */}
 
-        <section className="bg-gray-100 p-9 md:px-24 md:py-14">
-             <AnimateOnScroll direction="up" delay={0.2}>
-            <h2 className="text-3xl md:text-4xl font-bold text-center md:px-14 mb-4">Our Process</h2>
-            <p className="text-gray-500 text-lg text-center max-w-2xl mx-auto">
-                A systematic approach to deliver excellence
-            </p>
-            </AnimateOnScroll>
-            <div className="container md:mx-auto mt-8 grid grid-cols-1 gap-4  md:grid-cols-4">
-                {ProcessSteps.map((step, index) => (
-                    <AnimateOnScroll direction="up" delay={0.2+ index * 0.1} key={index}>
-                    <div key={index} className="max-w-3xl mx-auto py-6 text-center">
-                        <span className="w-16 h-16 mx-auto mb-4 
+      <section className="bg-gray-100 p-9 md:px-24 md:py-14">
+        <AnimateOnScroll direction="up" delay={0.2}>
+          <h2 className="text-3xl md:text-4xl font-bold text-center md:px-14 mb-4">
+            Our Process
+          </h2>
+          <p className="text-gray-500 text-lg text-center max-w-2xl mx-auto">
+            A systematic approach to deliver excellence
+          </p>
+        </AnimateOnScroll>
+        <div className="container md:mx-auto mt-8 grid grid-cols-1 gap-4  md:grid-cols-4">
+          {ProcessSteps.map((step, index) => (
+            <AnimateOnScroll
+              direction="up"
+              delay={0.2 + index * 0.1}
+              key={index}
+            >
+              <div key={index} className="max-w-3xl mx-auto py-6 text-center">
+                <span
+                  className="w-16 h-16 mx-auto mb-4 
                flex items-center justify-center 
                rounded-full bg-red-700 
-               text-white text-2xl font-bold leading-relaxed"> {String(index + 1).padStart(2, "0")}</span>
-                        <h2 className="font-bold text-lg mb-2">{step.title}</h2>
-                        <p className="text-gray-500 text-sm">{step.description}</p>
-                    </div>
-                    </AnimateOnScroll>
-                ))}
-            </div>
-        </section>
-
-        {/*Get a Quote Section */}
-        <section className="text-center py-18 px-4 md:px-30 lg:px-60 lg:py-24">
-            <AnimateOnScroll direction="up" delay={0.2}>
-            <div className="bg-[#1c1f26] text-white py-8 px-8 md:px-14 rounded-2xl md:py-12 shadow-2xl">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                    Ready to Start Your Project?
-                </h2>
-                <p className="text-gray-300 text-lg">
-                    Let&apos;s discuss how we can bring your construction vision to life
-                </p>
-                <Link href="/contact-us"className="inline-block mt-8 rounded-2xl bg-red-700 hover:bg-red-800 text-white font-bold py-4 px-8 transition-all duration-300 active:scale-95 hover:scale-115">
-                    Get a Quote
-                </Link>
-            </div>
+               text-white text-2xl font-bold leading-relaxed"
+                >
+                  {" "}
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <h2 className="font-bold text-lg mb-2">{step.title}</h2>
+                <p className="text-gray-500 text-sm">{step.description}</p>
+              </div>
             </AnimateOnScroll>
-        </section>
-        </main>
-  )
+          ))}
+        </div>
+      </section>
+
+      {/*Get a Quote Section */}
+      <section
+        className="text-center py-18 px-4 md:px-30 lg:px-60 lg:py-24"
+        style={{ backgroundImage: "url('/bgc.jpg')" }}
+      >
+        <AnimateOnScroll direction="up" delay={0.2}>
+          <div className="bg-[#1c1f26] text-white py-8 px-8 md:px-14 rounded-2xl md:py-12 shadow-2xl">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Ready to Start Your Project?
+            </h2>
+            <p className="text-gray-300 text-lg">
+              Let&apos;s discuss how we can bring your construction vision to
+              life
+            </p>
+            <Link
+              href="/contact-us"
+              className="inline-block mt-8 rounded-2xl bg-red-700 hover:bg-red-800 text-white font-bold py-4 px-8 transition-all duration-300 active:scale-95 hover:scale-115"
+            >
+              Get a Quote
+            </Link>
+          </div>
+        </AnimateOnScroll>
+      </section>
+    </main>
+  );
 }
 
 export default page
