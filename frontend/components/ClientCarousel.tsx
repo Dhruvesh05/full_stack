@@ -1,7 +1,4 @@
-// ClientsCarousel.jsx
-
-import AnimateOnScroll from "./AnimateOnScroll";
-import Image from "next/image";
+import AnimateOnScroll from "./AnimateOnScroll";import Image from "next/image";
 export default function ClientsCarousel() {
 
  const clients = [
