@@ -5,4 +5,4 @@ Allow: /
 Disallow: /_next/
 Disallow: /api/
 
-Sitemap: https://shubhconstructions.com/sitemap.xml
+Sitemap: https://www.shubhconstructions.com/sitemap.xml
