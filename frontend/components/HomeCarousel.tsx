@@ -1,15 +1,14 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import Link from "next/link"
-import AnimateOnScroll from "./AnimateOnScroll"
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Phone } from "lucide-react";
+import { motion } from "framer-motion";
 
 const SLIDES = [
   {
     image: "Bharat-Talpada_Portrait.webp",
-    alt: "Industrial construction crane work by Shubh Construction in Gujarat",
+    alt: "Bharat Talpada(Founder)",
     text: "Good buildings come from good people, and all problems are solved by good design",
     name: "Bharat Talpada",
     designation: "Founder",
@@ -19,7 +18,7 @@ const SLIDES = [
   },
   {
     image: "Jagdish-Vaghela_Portrait.webp",
-    alt: "Industrial construction crane work by Shubh Construction in Gujarat",
+    alt: "Jagdish Vaghela(Billing & Planning Engineer)",
     text: "An idea is salvation by imagination",
     name: "Jagdish Vaghela",
     designation: "Billing & Planning Engineer",
@@ -29,7 +28,7 @@ const SLIDES = [
   },
   {
     image: "Amarsinh_Portrait.webp",
-    alt: "Industrial construction crane work by Shubh Construction in Gujarat",
+    alt: "Amarsinh(Site Incharge)",
     text: "The sun never knew how great it was until it hit the side of a building",
     name: "Amar Singh",
     designation: "Site Incharge",
@@ -39,7 +38,6 @@ const SLIDES = [
   },
 ];
 
-
 export default function HeroCarousel() {
   const [current, setCurrent] = useState(0);
   const [mounted, setMounted] = useState(false);
@@ -47,22 +45,27 @@ export default function HeroCarousel() {
     setMounted(true);
   }, []);
 
-
   /* Auto Slide */
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % SLIDES.length)
-    }, 7000)
+      setCurrent((prev) => (prev + 1) % SLIDES.length);
+    }, 7000);
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearInterval(interval);
+  }, []);
 
-  const next = () => setCurrent((prev) => (prev + 1) % SLIDES.length)
+  const next = () => setCurrent((prev) => (prev + 1) % SLIDES.length);
   const prev = () =>
-    setCurrent((prev) => (prev - 1 + SLIDES.length) % SLIDES.length)
+    setCurrent((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
 
   return (
-    <section
+    <motion.section
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{
+        duration: 0.8,
+        ease: "linear",
+      }}
       className="bg-[url('/projects_photo/BG.webp')] bg-center bg-cover bg-no-repeat relative h-[600px] overflow-hidden w-full"
       role="banner"
     >
@@ -105,7 +108,7 @@ export default function HeroCarousel() {
             flex-shrink-0
           `}
               >
-                <div className="w-[220px] sm:w-[280px] md:w-[510px] lg:w-[550px]">
+                <div className="w-[220px] sm:w-[280px] md:w-[490px] lg:w-[510px]">
                   <Image
                     src={`/projects_photo/${slide.image}`}
                     alt={slide.alt}
@@ -154,25 +157,48 @@ export default function HeroCarousel() {
       })}
 
       {/* Left Arrow */}
-      <button
+      <motion.button
         onClick={prev}
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{
+          duration: 0.5,
+          delay: 0.6,
+          ease: "linear",
+        }}
         aria-label="Previous slide"
         className="absolute  left-2 sm:left-6 top-1/2  -translate-y-1/2 z-30 w-12 h-12 active:scale-90 transition-all duration-300 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur flex items-center justify-center text-white text-2xl"
       >
         ‹
-      </button>
+      </motion.button>
 
       {/* Right Arrow */}
-      <button
+      <motion.button
         onClick={next}
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{
+          duration: 0.5,
+          delay: 0.6,
+          ease: "linear",
+        }}
         aria-label="Next slide"
         className="absolute right-2 sm:right-6 top-1/2 active:scale-90 transition-all duration-300 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur flex items-center justify-center text-white text-2xl"
       >
         ›
-      </button>
+      </motion.button>
 
       {/* Indicators */}
-      <div className="absolute bottom-8  left-1/2 -translate-x-1/2 z-30 flex gap-2">
+      <motion.div
+        className="absolute bottom-8  left-1/2 -translate-x-1/2 z-30 flex gap-2"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.5,
+          delay: 0.8,
+          ease: "easeOut",
+        }}
+      >
         {SLIDES.map((_, index) => (
           <button
             key={index}
@@ -186,7 +212,7 @@ export default function HeroCarousel() {
             }`}
           />
         ))}
-      </div>
-    </section>
+      </motion.div>
+    </motion.section>
   );
 }
