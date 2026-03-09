@@ -47,11 +47,11 @@ export const metadata: Metadata = {
 const ExpInfo = [
   {
     title: "Completed Projects",
-    value: "100+",
+    value: "70+",
   },
   {
     title: "Years of Experience",
-    value: "10+",
+    value: "7+",
   },
   {
     title: "Satisfied Clients",
@@ -59,7 +59,7 @@ const ExpInfo = [
   },
   {
     title: "Timely Deliveries",
-    value: "95%",
+    value: "91%",
   },
 ];
 const Certificates = [

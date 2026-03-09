@@ -61,12 +61,12 @@ const ExpInfo = [
   {
     icon: Building,
     title: "Projects Completed",
-    value: "100+",
+    value: "70+",
   },
   {
     icon: Users,
     title: "Years of Experience",
-    value: "10+",
+    value: "7+",
   },
   {
     icon: Award,
@@ -76,7 +76,7 @@ const ExpInfo = [
   {
     icon: Clock,
     title: "Timely Deliveries",
-    value: "95%",
+    value: "91%",
   },
 ];
 const HomeServices = [

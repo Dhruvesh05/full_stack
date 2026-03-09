@@ -1,12 +1,25 @@
-import React from 'react'
+"use client";
+
+import React, { useEffect, useState } from 'react';
 import Image from "next/image";
 import { MapPin } from "lucide-react";
 import AnimateOnScroll from './AnimateOnScroll';
 
+interface Project {
+  id?: number;
+  image: string | null;
+  name: string;
+  type: string;
+  location: string;
+  locationLink?: string;
+}
 
 const ProjectCard = () => {
-    
-    const Projects = [
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    // Hardcoded existing projects
+    const existingProjects: Project[] = [
       {
         image: "Abbott Crane Foundation Work.jpg",
         name: "Abbott Crane Foundation Steel Binding Work",
@@ -183,20 +196,69 @@ const ProjectCard = () => {
       },
     ];
 
+    useEffect(() => {
+      const fetchProjects = async () => {
+        try {
+          const res = await fetch("http://localhost:5000/api/projects");
+          const apiProjects = await res.json();
+          
+          // Merge API projects with existing hardcoded projects
+          const mergedProjects = [
+            ...apiProjects.map((p: Project & { id: number }) => ({
+              id: p.id,
+              image: p.image || null, // Keep null if no image
+              name: p.name,
+              type: p.type,
+              location: p.location,
+              locationLink: p.locationLink, // Include location link from API
+            })),
+            ...existingProjects
+          ];
+          
+          setProjects(mergedProjects);
+        } catch (error) {
+          console.error("Failed to fetch projects:", error);
+          // If API fails, show existing projects
+          setProjects(existingProjects);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchProjects();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    if (loading) {
+      return (
+        <section className="grid grid-cols-1 gap-8 px-4 py-10 md:grid-cols-2 lg:grid-cols-3">
+          <div className="text-center col-span-full text-gray-500">
+            Loading projects...
+          </div>
+        </section>
+      );
+    }
+
   return (
     <section className="grid grid-cols-1 gap-8 px-4 py-10 md:grid-cols-2 lg:grid-cols-3">
-      {Projects.map((item, index) => (
-        <AnimateOnScroll direction="up" delay={(index % 3) * 0.2} key={index}>
+      {projects.map((item, index) => (
+        <AnimateOnScroll direction="up" delay={(index % 3) * 0.2} key={item.id || `project-${index}`}>
           <div
             className="relative shadow-xl bg-white border-[1] border-gray-400 hover:scale-105 hover:shadow-2xl transition-all duration-300 rounded-xl h-104 overflow-hidden"
-            key={index}
           >
             <Image
-              src={`/projects_photo/${item.image}`}
+              src={
+                item.id && item.image
+                  ? `http://localhost:5000${item.image}` 
+                  : item.image
+                  ? `/projects_photo/${item.image}`
+                  : `/projects_photo/Abbott Canola Work.png`
+              }
               alt={`${item.name} – ${item.type} construction project by Shubh Construction`}
               width={600}
               height={400}
               className="object-cover w-full h-2/3 cursor-pointer"
+              unoptimized={item.id ? true : false}
             />
             <div className="p-6 space-y-2">
               <h3 className="font-bold dark:text-gray-900 text-lg">
@@ -204,7 +266,18 @@ const ProjectCard = () => {
               </h3>
               <div className="absolute flex space-x-2 items-center bottom-6">
                 <MapPin size={24} color="red" />
-                <p className="text-gray-500 text-sm">{item.location}</p>
+                {item.locationLink ? (
+                  <a
+                    href={item.locationLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 text-sm underline cursor-pointer"
+                  >
+                    {item.location}
+                  </a>
+                ) : (
+                  <p className="text-gray-500 text-sm">{item.location}</p>
+                )}
               </div>
             </div>
             <span className="absolute text-white text-sm bg-red-700 rounded-3xl px-2 py-1 top-4 right-4">
