@@ -7,6 +7,7 @@ let projects = [
     location: "Mumbai",
     locationLink: "https://maps.google.com/?q=Mumbai",
     image: null,
+    updates: [],
     createdAt: new Date().toISOString()
   },
   {
@@ -16,11 +17,13 @@ let projects = [
     location: "Delhi",
     locationLink: "https://maps.google.com/?q=Delhi",
     image: null,
+    updates: [],
     createdAt: new Date().toISOString()
   }
 ];
 
 let nextId = 3;
+let nextUpdateId = 1;
 
 // Get all projects
 const getAllProjects = () => {
@@ -37,6 +40,7 @@ const createProject = (projectData) => {
   const newProject = {
     id: nextId++,
     ...projectData,
+    updates: [],
     createdAt: new Date().toISOString()
   };
   projects.push(newProject);
@@ -67,10 +71,58 @@ const deleteProject = (id) => {
   return deleted;
 };
 
+// Add update to project
+const addProjectUpdate = (projectId, updateData) => {
+  const project = projects.find(p => p.id === projectId);
+  if (!project) return null;
+  
+  if (!project.updates) {
+    project.updates = [];
+  }
+  
+  const newUpdate = {
+    id: nextUpdateId++,
+    ...updateData,
+    createdAt: new Date().toISOString()
+  };
+  
+  project.updates.unshift(newUpdate); // Add to beginning
+  return newUpdate;
+};
+
+// Get all updates for a project
+const getProjectUpdates = (projectId) => {
+  const project = projects.find(p => p.id === projectId);
+  if (!project) return null;
+  
+  // Ensure updates array exists (backwards compatibility)
+  if (!project.updates) {
+    project.updates = [];
+  }
+  
+  return project.updates;
+};
+
+// Delete an update from a project
+const deleteProjectUpdate = (projectId, updateId) => {
+  const project = projects.find(p => p.id === projectId);
+  if (!project || !project.updates) return null;
+  
+  const updateIndex = project.updates.findIndex(u => u.id === updateId);
+  if (updateIndex === -1) return null;
+  
+  const deleted = project.updates[updateIndex];
+  project.updates.splice(updateIndex, 1);
+  return deleted;
+};
+
 module.exports = {
   getAllProjects,
   getProjectById,
   createProject,
   updateProject,
-  deleteProject
+  deleteProject,
+  addProjectUpdate,
+  getProjectUpdates,
+  deleteProjectUpdate
 };

@@ -43,8 +43,8 @@ export default function EditProjectPage() {
 
   if (loading) {
     return (
-      <div>
-        <h1 className="text-2xl font-bold mb-6">Edit Project</h1>
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-900">Edit Project</h1>
         <div className="text-gray-600">Loading...</div>
       </div>
     );
@@ -52,8 +52,8 @@ export default function EditProjectPage() {
 
   if (!projectId || error || !project) {
     return (
-      <div>
-        <h1 className="text-2xl font-bold mb-6">Edit Project</h1>
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-900">Edit Project</h1>
         <div className="bg-red-100 text-red-600 p-4 rounded mb-4">
           {error || "Project not found. Please select a project to edit."}
         </div>
@@ -68,9 +68,9 @@ export default function EditProjectPage() {
   }
 
   return (
-    <div>
+    <div className="max-w-7xl mx-auto">
 
-      <h1 className="text-2xl font-bold mb-6">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-900">
         Edit Project
       </h1>
 

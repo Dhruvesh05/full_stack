@@ -87,66 +87,66 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
 
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 max-w-md"
+      className="space-y-4 max-w-2xl bg-white p-4 sm:p-6 rounded-lg shadow"
     >
 
       {error && (
-        <div className="bg-red-100 text-red-600 p-3 rounded">
+        <div className="bg-red-100 text-red-600 p-3 rounded text-sm sm:text-base">
           {error}
         </div>
       )}
 
       <div>
-        <label className="block mb-2 font-medium">Project Name</label>
+        <label className="block mb-2 font-medium text-gray-900 text-sm sm:text-base">Project Name</label>
         <input
           placeholder="Enter project name"
           value={name}
-          className="border p-2 w-full rounded"
+          className="border p-2 sm:p-3 w-full rounded text-gray-900 text-sm sm:text-base"
           onChange={(e) => setName(e.target.value)}
           required
         />
       </div>
 
       <div>
-        <label className="block mb-2 font-medium">Project Type</label>
+        <label className="block mb-2 font-medium text-gray-900 text-sm sm:text-base">Project Type</label>
         <input
           placeholder="e.g., Residential, Commercial"
           value={type}
-          className="border p-2 w-full rounded"
+          className="border p-2 sm:p-3 w-full rounded text-gray-900 text-sm sm:text-base"
           onChange={(e) => setType(e.target.value)}
           required
         />
       </div>
 
       <div>
-        <label className="block mb-2 font-medium">Location</label>
+        <label className="block mb-2 font-medium text-gray-900 text-sm sm:text-base">Location</label>
         <input
           placeholder="Enter location"
           value={location}
-          className="border p-2 w-full rounded"
+          className="border p-2 sm:p-3 w-full rounded text-gray-900 text-sm sm:text-base"
           onChange={(e) => setLocation(e.target.value)}
           required
         />
       </div>
 
       <div>
-        <label className="block mb-2 font-medium">Location Link (Google Maps)</label>
+        <label className="block mb-2 font-medium text-gray-900 text-sm sm:text-base">Location Link (Google Maps)</label>
         <input
           type="url"
           placeholder="Enter Google Maps link (optional)"
           value={locationLink}
-          className="border p-2 w-full rounded"
+          className="border p-2 sm:p-3 w-full rounded text-gray-900 text-sm sm:text-base"
           onChange={(e) => setLocationLink(e.target.value)}
         />
         <p className="text-xs text-gray-500 mt-1">Example: https://maps.google.com/?q=Your+Location</p>
       </div>
 
       <div>
-        <label className="block mb-2 font-medium">Project Image</label>
+        <label className="block mb-2 font-medium text-gray-900 text-sm sm:text-base">Project Image</label>
         <input
           type="file"
           accept="image/*"
-          className="border p-2 w-full rounded"
+          className="border p-2 w-full rounded text-gray-900 text-sm sm:text-base file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100"
           onChange={(e) => setImage(e.target.files?.[0] || null)}
         />
       </div>

@@ -18,4 +18,14 @@ router.put('/:id', upload.single('image'), projectController.updateProject);
 // Delete project
 router.delete('/:id', projectController.deleteProject);
 
+// Project Updates Routes
+// Add update to project
+router.post('/:id/updates', projectController.addProjectUpdate);
+
+// Get all updates for a project
+router.get('/:id/updates', projectController.getProjectUpdates);
+
+// Delete update from project
+router.delete('/:id/updates/:updateId', projectController.deleteProjectUpdate);
+
 module.exports = router;

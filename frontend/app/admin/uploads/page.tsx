@@ -47,32 +47,32 @@ export default function UploadsPage() {
   };
 
   return (
-    <div>
+    <div className="max-w-7xl mx-auto">
 
-      <h1 className="text-2xl font-bold mb-6">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-900">
         Upload Site Update
       </h1>
 
-      <div className="max-w-md space-y-4">
+      <div className="max-w-2xl bg-white p-4 sm:p-6 rounded-lg shadow space-y-4">
 
         {error && (
-          <div className="bg-red-100 text-red-600 p-3 rounded">
+          <div className="bg-red-100 text-red-600 p-3 rounded text-sm sm:text-base">
             {error}
           </div>
         )}
 
         {success && (
-          <div className="bg-green-100 text-green-600 p-3 rounded">
+          <div className="bg-green-100 text-green-600 p-3 rounded text-sm sm:text-base">
             {success}
           </div>
         )}
 
         <div>
-          <label className="block mb-2 font-medium">Select Image</label>
+          <label className="block mb-2 font-medium text-gray-900 text-sm sm:text-base">Select Image</label>
           <input
             type="file"
             accept="image/*"
-            className="border p-2 w-full rounded"
+            className="border p-2 w-full rounded text-gray-900 text-sm sm:text-base file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
             onChange={(e) => setImage(e.target.files?.[0] || null)}
           />
         </div>
@@ -80,7 +80,7 @@ export default function UploadsPage() {
         <button
           onClick={handleUpload}
           disabled={loading || !image}
-          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 disabled:bg-gray-400 w-full"
+          className="bg-blue-600 text-white px-6 py-2 sm:py-3 rounded hover:bg-blue-700 disabled:bg-gray-400 w-full text-sm sm:text-base font-medium"
         >
           {loading ? "Uploading..." : "Upload Image"}
         </button>

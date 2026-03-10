@@ -12,9 +12,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    // Initialize from localStorage if available (only on client)
+    // Use sessionStorage instead of localStorage for session-based auth
+    // This ensures login is required each time the browser/tab is opened
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('admin_authenticated') === 'true';
+      return sessionStorage.getItem('admin_authenticated') === 'true';
     }
     return false;
   });
@@ -24,7 +25,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // For now, using hardcoded credentials
     if (email === 'admin@shubhconstruction.com' && password === 'admin123') {
       setIsAuthenticated(true);
-      localStorage.setItem('admin_authenticated', 'true');
+      sessionStorage.setItem('admin_authenticated', 'true');
       return true;
     }
     return false;
@@ -32,7 +33,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = () => {
     setIsAuthenticated(false);
-    localStorage.removeItem('admin_authenticated');
+    sessionStorage.removeItem('admin_authenticated');
   };
 
   return (

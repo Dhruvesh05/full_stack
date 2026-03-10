@@ -25,19 +25,19 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
 
       <form 
         onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-xl shadow-md w-96 space-y-4"
+        className="bg-white p-6 sm:p-8 rounded-xl shadow-md w-full max-w-md space-y-4"
       >
 
-        <h2 className="text-2xl font-bold text-center">
+        <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-900">
           Admin Login
         </h2>
 
         {error && (
-          <div className="bg-red-100 text-red-600 p-3 rounded">
+          <div className="bg-red-100 text-red-600 p-3 rounded text-sm sm:text-base">
             {error}
           </div>
         )}
@@ -47,7 +47,7 @@ export default function AdminLogin() {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="border w-full p-2 rounded"
+          className="border w-full p-2 sm:p-3 rounded text-gray-900 text-sm sm:text-base"
           required
         />
 
@@ -56,18 +56,18 @@ export default function AdminLogin() {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="border w-full p-2 rounded"
+          className="border w-full p-2 sm:p-3 rounded text-gray-900 text-sm sm:text-base"
           required
         />
 
         <button 
           type="submit"
-          className="bg-red-600 text-white w-full p-2 rounded hover:bg-red-700"
+          className="bg-red-600 text-white w-full p-2 sm:p-3 rounded hover:bg-red-700 text-sm sm:text-base font-medium"
         >
           Login
         </button>
 
-        <div className="text-sm text-gray-600 text-center mt-4">
+        <div className="text-xs sm:text-sm text-gray-600 text-center mt-4">
           <p>Demo credentials:</p>
           <p>Email: admin@shubhconstruction.com</p>
           <p>Password: admin123</p>

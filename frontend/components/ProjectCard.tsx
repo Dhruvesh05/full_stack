@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import Image from "next/image";
 import { MapPin } from "lucide-react";
 import AnimateOnScroll from './AnimateOnScroll';
+import ProjectDetailModal from './ProjectDetailModal';
+import { Project as ProjectType } from '@/types/project';
 
 interface Project {
   id?: number;
@@ -17,6 +19,28 @@ interface Project {
 const ProjectCard = () => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
+    const [selectedProject, setSelectedProject] = useState<ProjectType | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleProjectClick = (project: Project) => {
+      // Convert to ProjectType if it has an id
+      if (project.id) {
+        setSelectedProject({
+          id: project.id,
+          name: project.name,
+          type: project.type,
+          location: project.location,
+          locationLink: project.locationLink,
+          image: project.image || undefined,
+        });
+      }
+      setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+      setIsModalOpen(false);
+      setTimeout(() => setSelectedProject(null), 300); // Clear after animation
+    };
 
     // Hardcoded existing projects
     const existingProjects: Project[] = [
@@ -240,53 +264,64 @@ const ProjectCard = () => {
     }
 
   return (
-    <section className="grid grid-cols-1 gap-8 px-4 py-10 md:grid-cols-2 lg:grid-cols-3">
-      {projects.map((item, index) => (
-        <AnimateOnScroll direction="up" delay={(index % 3) * 0.2} key={item.id || `project-${index}`}>
-          <div
-            className="relative shadow-xl bg-white border-[1] border-gray-400 hover:scale-105 hover:shadow-2xl transition-all duration-300 rounded-xl h-104 overflow-hidden"
-          >
-            <Image
-              src={
-                item.id && item.image
-                  ? `http://localhost:5000${item.image}` 
-                  : item.image
-                  ? `/projects_photo/${item.image}`
-                  : `/projects_photo/Abbott Canola Work.png`
-              }
-              alt={`${item.name} – ${item.type} construction project by Shubh Construction`}
-              width={600}
-              height={400}
-              className="object-cover w-full h-2/3 cursor-pointer"
-              unoptimized={item.id ? true : false}
-            />
-            <div className="p-6 space-y-2">
-              <h3 className="font-bold dark:text-gray-900 text-lg">
-                {item.name}
-              </h3>
-              <div className="absolute flex space-x-2 items-center bottom-6">
-                <MapPin size={24} color="red" />
-                {item.locationLink ? (
-                  <a
-                    href={item.locationLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-800 text-sm underline cursor-pointer"
-                  >
-                    {item.location}
-                  </a>
-                ) : (
-                  <p className="text-gray-500 text-sm">{item.location}</p>
-                )}
+    <>
+      <section className="grid grid-cols-1 gap-8 px-4 py-10 md:grid-cols-2 lg:grid-cols-3">
+        {projects.map((item, index) => (
+          <AnimateOnScroll direction="up" delay={(index % 3) * 0.2} key={item.id || `project-${index}`}>
+            <div
+              onClick={() => handleProjectClick(item)}
+              className="relative shadow-xl bg-white border-[1] border-gray-400 hover:scale-105 hover:shadow-2xl transition-all duration-300 rounded-xl h-104 overflow-hidden cursor-pointer"
+            >
+              <Image
+                src={
+                  item.id && item.image
+                    ? `http://localhost:5000${item.image}` 
+                    : item.image
+                    ? `/projects_photo/${item.image}`
+                    : `/projects_photo/Abbott Canola Work.png`
+                }
+                alt={`${item.name} – ${item.type} construction project by Shubh Construction`}
+                width={600}
+                height={400}
+                className="object-cover w-full h-2/3 cursor-pointer"
+                unoptimized={item.id ? true : false}
+              />
+              <div className="p-6 space-y-2">
+                <h3 className="font-bold dark:text-gray-900 text-lg">
+                  {item.name}
+                </h3>
+                <div className="absolute flex space-x-2 items-center bottom-6">
+                  <MapPin size={24} color="red" />
+                  {item.locationLink ? (
+                    <a
+                      href={item.locationLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-blue-600 hover:text-blue-800 text-sm underline cursor-pointer"
+                    >
+                      {item.location}
+                    </a>
+                  ) : (
+                    <p className="text-gray-500 text-sm">{item.location}</p>
+                  )}
+                </div>
               </div>
+              <span className="absolute text-white text-sm bg-red-700 rounded-3xl px-2 py-1 top-4 right-4">
+                {item.type}
+              </span>
             </div>
-            <span className="absolute text-white text-sm bg-red-700 rounded-3xl px-2 py-1 top-4 right-4">
-              {item.type}
-            </span>
-          </div>
-        </AnimateOnScroll>
-      ))}
-    </section>
+          </AnimateOnScroll>
+        ))}
+      </section>
+
+      {/* Project Detail Modal */}
+      <ProjectDetailModal 
+        project={selectedProject}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
+    </>
   );
 }
 
