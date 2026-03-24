@@ -21,15 +21,15 @@ export default function EditProjectPage() {
     const fetchProject = async () => {
       try {
         const res = await fetch(`http://localhost:5000/api/projects/${projectId}`);
+        const result = await res.json();
         
         if (!res.ok) {
-          setError(res.status === 404 ? "Project not found" : "Failed to load project");
+          setError(result.message || "Failed to load project");
           setLoading(false);
           return;
         }
         
-        const data = await res.json();
-        setProject(data);
+        setProject(result.data);
       } catch (error) {
         console.error("Failed to fetch project:", error);
         setError("Failed to load project. Please try again.");
@@ -80,7 +80,8 @@ export default function EditProjectPage() {
           name: project.name,
           type: project.type,
           location: project.location,
-          locationLink: project.locationLink
+          locationLink: project.locationLink,
+          map3dIframe: project.map3dIframe
         }}
       />
 

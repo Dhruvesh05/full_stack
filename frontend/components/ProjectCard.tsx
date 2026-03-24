@@ -9,12 +9,76 @@ import { Project as ProjectType } from '@/types/project';
 
 interface Project {
   id?: number;
+  uniqueKey: string;
+  modalId: number;
   image: string | null;
   name: string;
   type: string;
   location: string;
   locationLink?: string;
+  map3dIframe?: string;
 }
+
+const BACKEND_BASE_URL = "http://localhost:5000";
+const FALLBACK_IMAGE = "/projects_photo/Abbott Canola Work.png";
+
+const encodePathSegments = (path: string) =>
+  path
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+
+const getProjectImageSrc = (project: Project): string => {
+  const rawImage = typeof project.image === "string" ? project.image.trim() : "";
+
+  if (!rawImage) {
+    return FALLBACK_IMAGE;
+  }
+
+  if (rawImage.startsWith("http://") || rawImage.startsWith("https://")) {
+    return encodeURI(rawImage);
+  }
+
+  if (rawImage.startsWith("/projects_photo/")) {
+    const localPath = rawImage.replace("/projects_photo/", "");
+    return `/projects_photo/${encodePathSegments(localPath)}`;
+  }
+
+  const isApiProject = typeof project.id === "number" && project.id > 0;
+  if (isApiProject) {
+    const normalizedPath = rawImage.startsWith("/") ? rawImage : `/${rawImage}`;
+    return `${BACKEND_BASE_URL}${encodeURI(normalizedPath)}`;
+  }
+
+  return `/projects_photo/${encodePathSegments(rawImage)}`;
+};
+
+const isRemoteImage = (src: string) => src.startsWith("http://") || src.startsWith("https://");
+
+const extractIframeSrc = (value?: string): string => {
+  if (!value) return "";
+
+  const trimmed = value
+    .trim()
+    .replaceAll("&quot;", '"')
+    .replaceAll("&#34;", '"')
+    .replaceAll("&apos;", "'")
+    .replaceAll("&#39;", "'");
+
+  if (!trimmed) return "";
+
+  const srcMatch = trimmed.match(/src=["']([^"']+)["']/i);
+  if (srcMatch?.[1]) {
+    return srcMatch[1];
+  }
+
+  const googleEmbedMatch = trimmed.match(/https?:\/\/[^\s"'<>]*google\.com\/maps\/embed[^\s"'<>]*/i);
+  if (googleEmbedMatch?.[0]) {
+    return googleEmbedMatch[0];
+  }
+
+  return /^https?:\/\//i.test(trimmed) ? trimmed : "";
+};
 
 const ProjectCard = () => {
     const [projects, setProjects] = useState<Project[]>([]);
@@ -23,27 +87,25 @@ const ProjectCard = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleProjectClick = (project: Project) => {
-      // Convert to ProjectType if it has an id
-      if (project.id) {
-        setSelectedProject({
-          id: project.id,
-          name: project.name,
-          type: project.type,
-          location: project.location,
-          locationLink: project.locationLink,
-          image: project.image || undefined,
-        });
-      }
+      setSelectedProject({
+        id: project.modalId,
+        name: project.name,
+        type: project.type,
+        location: project.location,
+        locationLink: project.locationLink,
+        map3dIframe: project.map3dIframe,
+        image: project.image || undefined,
+      });
       setIsModalOpen(true);
     };
 
     const handleCloseModal = () => {
       setIsModalOpen(false);
-      setTimeout(() => setSelectedProject(null), 300); // Clear after animation
+      setSelectedProject(null);
     };
 
     // Hardcoded existing projects
-    const existingProjects: Project[] = [
+    const existingProjects = [
       {
         image: "Abbott Crane Foundation Work.jpg",
         name: "Abbott Crane Foundation Steel Binding Work",
@@ -224,26 +286,48 @@ const ProjectCard = () => {
       const fetchProjects = async () => {
         try {
           const res = await fetch("http://localhost:5000/api/projects");
-          const apiProjects = await res.json();
+          const result = await res.json();
+
+          if (!res.ok) {
+            throw new Error(result.message || "Failed to fetch projects");
+          }
+
+          const apiProjects = result.data || [];
+
+          const normalizedExistingProjects: Project[] = existingProjects.map((project, index) => ({
+            ...project,
+            uniqueKey: `local-${project.name}-${project.location}-${index}`,
+            modalId: -(index + 1),
+            image: project.image || null,
+          }));
           
           // Merge API projects with existing hardcoded projects
-          const mergedProjects = [
+          const mergedProjects: Project[] = [
             ...apiProjects.map((p: Project & { id: number }) => ({
               id: p.id,
+              uniqueKey: `api-${p.id}`,
+              modalId: p.id,
               image: p.image || null, // Keep null if no image
               name: p.name,
               type: p.type,
               location: p.location,
               locationLink: p.locationLink, // Include location link from API
+              map3dIframe: p.map3dIframe,
             })),
-            ...existingProjects
+            ...normalizedExistingProjects
           ];
           
           setProjects(mergedProjects);
         } catch (error) {
           console.error("Failed to fetch projects:", error);
           // If API fails, show existing projects
-          setProjects(existingProjects);
+          const normalizedExistingProjects: Project[] = existingProjects.map((project, index) => ({
+            ...project,
+            uniqueKey: `local-${project.name}-${project.location}-${index}`,
+            modalId: -(index + 1),
+            image: project.image || null,
+          }));
+          setProjects(normalizedExistingProjects);
         } finally {
           setLoading(false);
         }
@@ -266,61 +350,100 @@ const ProjectCard = () => {
   return (
     <>
       <section className="grid grid-cols-1 gap-8 px-4 py-10 md:grid-cols-2 lg:grid-cols-3">
-        {projects.map((item, index) => (
-          <AnimateOnScroll direction="up" delay={(index % 3) * 0.2} key={item.id || `project-${index}`}>
-            <div
+        {projects.map((item, index) => {
+          const imageSrc = getProjectImageSrc(item);
+          const isRemote = isRemoteImage(imageSrc);
+          const map3dEmbedSrc = extractIframeSrc(item.map3dIframe);
+
+          return (
+          <AnimateOnScroll direction="up" delay={(index % 3) * 0.2} key={item.uniqueKey}>
+            <div 
+              className="relative shadow-xl bg-white border-[1] border-gray-400 hover:shadow-2xl transition-all duration-300 rounded-xl overflow-hidden cursor-pointer flex flex-col h-full"
               onClick={() => handleProjectClick(item)}
-              className="relative shadow-xl bg-white border-[1] border-gray-400 hover:scale-105 hover:shadow-2xl transition-all duration-300 rounded-xl h-104 overflow-hidden cursor-pointer"
             >
-              <Image
-                src={
-                  item.id && item.image
-                    ? `http://localhost:5000${item.image}` 
-                    : item.image
-                    ? `/projects_photo/${item.image}`
-                    : `/projects_photo/Abbott Canola Work.png`
-                }
-                alt={`${item.name} – ${item.type} construction project by Shubh Construction`}
-                width={600}
-                height={400}
-                className="object-cover w-full h-2/3 cursor-pointer"
-                unoptimized={item.id ? true : false}
-              />
-              <div className="p-6 space-y-2">
-                <h3 className="font-bold dark:text-gray-900 text-lg">
-                  {item.name}
-                </h3>
-                <div className="absolute flex space-x-2 items-center bottom-6">
-                  <MapPin size={24} color="red" />
-                  {item.locationLink ? (
-                    <a
-                      href={item.locationLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="text-blue-600 hover:text-blue-800 text-sm underline cursor-pointer"
-                    >
-                      {item.location}
-                    </a>
-                  ) : (
-                    <p className="text-gray-500 text-sm">{item.location}</p>
-                  )}
+              {/* Top Section: 3D Map or Image */}
+              {map3dEmbedSrc ? (
+                <div className="w-full h-80 overflow-hidden bg-gray-100" onClick={(e) => e.stopPropagation()}>
+                  <iframe
+                    src={map3dEmbedSrc}
+                    width="100%"
+                    height="320"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title={`${item.name} Interactive 3D Map`}
+                  />
                 </div>
+              ) : (
+                <div className="w-full h-64 overflow-hidden">
+                  <Image
+                    src={imageSrc}
+                    alt={`${item.name} - ${item.type} construction project by Shubh Construction`}
+                    width={600}
+                    height={250}
+                    className="object-cover w-full h-full cursor-pointer hover:opacity-90 transition-opacity"
+                    unoptimized={isRemote}
+                  />
+                </div>
+              )}
+
+              {/* Bottom Section: Project Info */}
+              <div className="p-4 space-y-3 grow flex flex-col justify-between">
+                <div>
+                  <h3 className="font-bold text-gray-900 text-base mb-2">
+                    {item.name}
+                  </h3>
+                  <div className="flex items-start gap-2">
+                    <MapPin size={18} color="red" className="shrink-0 mt-0.5" />
+                    {item.locationLink ? (
+                      <a
+                        href={item.locationLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-blue-600 hover:text-blue-800 text-xs underline cursor-pointer line-clamp-2"
+                      >
+                        {item.location}
+                      </a>
+                    ) : (
+                      <p className="text-gray-600 text-xs line-clamp-2">{item.location}</p>
+                    )}
+                  </div>
+                </div>
+                {!map3dEmbedSrc && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleProjectClick(item);
+                    }}
+                    className="w-full bg-red-600 text-white text-xs py-2 rounded hover:bg-red-700 transition-colors font-medium"
+                  >
+                    View Details
+                  </button>
+                )}
               </div>
-              <span className="absolute text-white text-sm bg-red-700 rounded-3xl px-2 py-1 top-4 right-4">
+
+              {/* Badge */}
+              <span className="absolute text-white text-xs bg-red-700 rounded-full px-2 py-1 top-3 right-3">
                 {item.type}
               </span>
             </div>
           </AnimateOnScroll>
-        ))}
+          );
+        })}
       </section>
 
       {/* Project Detail Modal */}
-      <ProjectDetailModal 
-        project={selectedProject}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-      />
+      {isModalOpen && selectedProject && (
+        <ProjectDetailModal 
+          key={`modal-${selectedProject.id}`}
+          project={selectedProject}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+        />
+      )}
     </>
   );
 }

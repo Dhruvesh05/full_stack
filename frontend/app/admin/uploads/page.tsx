@@ -28,9 +28,10 @@ export default function UploadsPage() {
         method: "POST",
         body: formData
       });
+      const result = await response.json();
 
       if (!response.ok) {
-        throw new Error("Upload failed");
+        throw new Error(result.message || "Upload failed");
       }
 
       setSuccess("Image uploaded successfully!");

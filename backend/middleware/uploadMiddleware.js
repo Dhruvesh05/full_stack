@@ -1,42 +1,114 @@
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+import multer from "multer";
+import cloudinary, { assertCloudinaryConfigured } from "../config/cloudinary.js";
 
-// Ensure uploads directory exists
-const uploadDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-// Configure storage
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
-// File filter for images only
+// ===============================
+// File Filter
+// ===============================
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = /jpeg|jpg|png|gif|webp/;
-  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = allowedTypes.test(file.mimetype);
+  const allowedMimes = [
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/webp",
+    "video/mp4",
+  ];
 
-  if (mimetype && extname) {
-    return cb(null, true);
+  if (allowedMimes.includes(file.mimetype)) {
+    cb(null, true);
   } else {
-    cb(new Error('Only image files are allowed!'));
+    cb(new Error("Invalid file type"), false);
   }
 };
 
-// Configure multer
+// ===============================
+// Multer (memory storage)
+// ===============================
 const upload = multer({
-  storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-  fileFilter: fileFilter
+  storage: multer.memoryStorage(),
+  fileFilter,
+  limits: {
+    fileSize: 50 * 1024 * 1024,
+  },
 });
 
-module.exports = upload;
+// ===============================
+// Cloudinary Upload Helper
+// ===============================
+const uploadToCloudinary = (file) => {
+  return new Promise((resolve, reject) => {
+    const resourceType = file.mimetype.startsWith("video")
+      ? "video"
+      : "image";
+
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder: "shubh_projects",
+        resource_type: resourceType,
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      }
+    );
+
+    stream.end(file.buffer);
+  });
+};
+
+// ===============================
+// Wrapped Middleware
+// ===============================
+const wrappedUpload = {
+  single: (fieldName) => async (req, res, next) => {
+    try {
+      assertCloudinaryConfigured();
+    } catch (cfgErr) {
+      return res.status(cfgErr.status || 500).json({
+        success: false,
+        message: cfgErr.message || "Cloudinary not configured",
+      });
+    }
+
+    // Ensure predictable shape
+    req.uploadedFile = null;
+
+    upload.single(fieldName)(req, res, async (err) => {
+      if (err) {
+        console.error("❌ Multer Error:", err.message);
+        return res.status(400).json({
+          success: false,
+          message: err.message,
+        });
+      }
+
+      try {
+        if (req.file) {
+          console.log("☁️ Uploading to Cloudinary...");
+
+          const result = await uploadToCloudinary(req.file);
+
+          // ✅ IMPORTANT: attach clean object
+          req.uploadedFile = {
+            url: result.secure_url,
+            public_id: result.public_id,
+          };
+
+          console.log("✅ Upload success:", result.secure_url);
+        } else {
+          console.log("ℹ️ No file provided, skipping Cloudinary upload");
+        }
+
+        next();
+      } catch (error) {
+        console.error("❌ Cloudinary Error:", error.message);
+
+        return res.status(500).json({
+          success: false,
+          message: "Cloudinary upload failed",
+        });
+      }
+    });
+  },
+};
+
+export default wrappedUpload;

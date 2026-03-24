@@ -11,6 +11,7 @@ export interface Project {
   type: string;
   location: string;
   locationLink?: string;
+  map3dIframe?: string;
   image?: string;
   updates?: ProjectUpdate[];
   createdAt?: string;
@@ -22,5 +23,6 @@ export interface ProjectFormData {
   type: string;
   location: string;
   locationLink?: string;
+  map3dIframe?: string;
   image: File | null;
 }

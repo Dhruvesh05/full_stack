@@ -11,23 +11,77 @@ interface ProjectDetailModalProps {
   onClose: () => void;
 }
 
+const BACKEND_BASE_URL = "http://localhost:5000";
+const FALLBACK_IMAGE = "/projects_photo/Abbott Canola Work.png";
+
+const encodePathSegments = (path: string) =>
+  path
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+
+const getProjectImageSrc = (project: Project): string => {
+  const rawImage = typeof project.image === "string" ? project.image.trim() : "";
+
+  if (!rawImage) {
+    return FALLBACK_IMAGE;
+  }
+
+  if (rawImage.startsWith("http://") || rawImage.startsWith("https://")) {
+    return encodeURI(rawImage);
+  }
+
+  if (rawImage.startsWith("/projects_photo/")) {
+    const localPath = rawImage.replace("/projects_photo/", "");
+    return `/projects_photo/${encodePathSegments(localPath)}`;
+  }
+
+  const isApiProject = typeof project.id === "number" && project.id > 0;
+  if (isApiProject) {
+    const normalizedPath = rawImage.startsWith("/") ? rawImage : `/${rawImage}`;
+    return `${BACKEND_BASE_URL}${encodeURI(normalizedPath)}`;
+  }
+
+  return `/projects_photo/${encodePathSegments(rawImage)}`;
+};
+
+const isRemoteImage = (src: string) => src.startsWith("http://") || src.startsWith("https://");
+
+const extractIframeSrc = (value?: string): string => {
+  if (!value) return "";
+
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+
+  const srcMatch = trimmed.match(/src=["']([^"']+)["']/i);
+  if (srcMatch?.[1]) {
+    return srcMatch[1];
+  }
+
+  return /^https?:\/\//i.test(trimmed) ? trimmed : "";
+};
+
 export default function ProjectDetailModal({ project, isOpen, onClose }: ProjectDetailModalProps) {
   const [updates, setUpdates] = useState<ProjectUpdate[]>([]);
   const [loading, setLoading] = useState(false);
+  const [showMap, setShowMap] = useState(false);
+  const imageSrc = project ? getProjectImageSrc(project) : FALLBACK_IMAGE;
+  const isRemoteProjectImage = isRemoteImage(imageSrc);
+  const map3dEmbedSrc = extractIframeSrc(project?.map3dIframe);
 
   const fetchUpdates = async () => {
-    if (!project?.id) return;
+    if (!project?.id || project.id <= 0) return;
     
     setLoading(true);
     try {
       const response = await fetch(`http://localhost:5000/api/projects/${project.id}/updates`);
-      if (response.ok) {
-        const data = await response.json();
-        setUpdates(Array.isArray(data) ? data : []);
-      } else {
-        console.error('Failed to fetch updates:', response.statusText);
-        setUpdates([]);
+      const result = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to fetch updates");
       }
+      
+      setUpdates(Array.isArray(result.data) ? result.data : []);
     } catch (error) {
       console.error("Failed to fetch updates:", error);
       setUpdates([]);
@@ -37,7 +91,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
   };
 
   useEffect(() => {
-    if (isOpen && project?.id) {
+    if (isOpen && project?.id && project.id > 0) {
       fetchUpdates();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -47,7 +101,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 overflow-y-auto">
-      <div className="relative bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto my-8">
+      <div className="relative bg-white rounded-xl shadow-2xl max-w-7xl w-full max-h-[90vh] overflow-y-auto my-8">
         
         {/* Close Button */}
         <button
@@ -61,17 +115,11 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
         {/* Project Image */}
         <div className="relative h-64 sm:h-80 w-full">
           <Image
-            src={
-              project.id && project.image
-                ? `http://localhost:5000${project.image}` 
-                : project.image
-                ? `/projects_photo/${project.image}`
-                : `/projects_photo/Abbott Canola Work.png`
-            }
+            src={imageSrc}
             alt={project.name}
             fill
             className="object-cover"
-            unoptimized={project.id ? true : false}
+            unoptimized={isRemoteProjectImage}
           />
           <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
           <div className="absolute bottom-4 left-4 right-4">
@@ -84,24 +132,96 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
           </div>
         </div>
 
-        {/* Project Details */}
+        {/* 2-Column Layout: Project Details + 3D Map */}
         <div className="p-6 sm:p-8">
-          
-          {/* Location */}
-          <div className="flex items-start gap-2 mb-6">
-            <MapPin size={24} className="text-red-600 shrink-0 mt-1" />
-            <div>
-              {project.locationLink ? (
-                <a
-                  href={project.locationLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-800 underline text-lg"
-                >
-                  {project.location}
-                </a>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            
+            {/* LEFT COLUMN: Project Details */}
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Project Information</h3>
+                
+                {/* Location */}
+                <div className="flex items-start gap-2">
+                  <MapPin size={20} className="text-red-600 shrink-0 mt-1" />
+                  <div>
+                    {project.locationLink ? (
+                      <a
+                        href={project.locationLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 underline"
+                      >
+                        {project.location}
+                      </a>
+                    ) : (
+                      <p className="text-gray-700">{project.location}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Map Instructions */}
+                <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                  <p className="text-sm text-blue-900 font-medium mb-1">3D Map Controls:</p>
+                  <ul className="text-xs text-blue-800 space-y-1">
+                    {map3dEmbedSrc ? (
+                      <li>• Explore the 3D view directly in the embedded Google Maps iframe.</li>
+                    ) : (
+                      <>
+                        <li>• Add a Google Maps embed iframe from Admin Panel for 3D view.</li>
+                        <li>• You can still open the location link in a new tab.</li>
+                      </>
+                    )}
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT COLUMN: Interactive 3D Google Maps */}
+            <div className="w-full">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">Interactive 3D Location Map</h3>
+              {!showMap ? (
+                <div className="rounded-xl shadow-lg h-64 w-full bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center p-6 text-center border-2 border-red-200">
+                  <div>
+                    <p className="text-gray-700 font-medium mb-4">Click below to view the 3D location map</p>
+                    <button
+                      onClick={() => setShowMap(true)}
+                      className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors"
+                    >
+                      View 3D Map
+                    </button>
+                  </div>
+                </div>
+              ) : map3dEmbedSrc ? (
+                <div>
+                  <iframe
+                    src={map3dEmbedSrc}
+                    width="100%"
+                    height="350"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    className="rounded-xl shadow-lg w-full"
+                    title={`${project.name} Google Maps 3D View`}
+                  />
+                </div>
               ) : (
-                <p className="text-gray-700 text-lg">{project.location}</p>
+                <div className="rounded-xl shadow-lg h-87.5 w-full bg-gray-100 flex items-center justify-center p-6 text-center">
+                  <div>
+                    <p className="text-gray-700 font-medium">3D map iframe is not added for this project.</p>
+                    {project.locationLink && (
+                      <a
+                        href={project.locationLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block mt-3 text-blue-600 hover:text-blue-800 underline"
+                      >
+                        Open location in Google Maps
+                      </a>
+                    )}
+                  </div>
+                </div>
               )}
             </div>
           </div>

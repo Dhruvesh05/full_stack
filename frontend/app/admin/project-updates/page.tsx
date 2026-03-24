@@ -30,19 +30,21 @@ export default function ProjectUpdatesPage() {
       try {
         // Fetch project details
         const projectRes = await fetch(`http://localhost:5000/api/projects/${projectId}`);
+        const projectResult = await projectRes.json();
+        
         if (!projectRes.ok) {
-          setError(projectRes.status === 404 ? "Project not found" : "Failed to load project");
+          setError(projectResult.message || "Failed to load project");
           setLoading(false);
           return;
         }
-        const projectData = await projectRes.json();
-        setProject(projectData);
+        setProject(projectResult.data);
 
         // Fetch updates
         const updatesRes = await fetch(`http://localhost:5000/api/projects/${projectId}/updates`);
+        const updatesResult = await updatesRes.json();
+        
         if (updatesRes.ok) {
-          const updatesData = await updatesRes.json();
-          setUpdates(Array.isArray(updatesData) ? updatesData : []);
+          setUpdates(Array.isArray(updatesResult.data) ? updatesResult.data : []);
         } else {
           console.warn('Failed to fetch updates, initializing empty array');
           setUpdates([]);
@@ -83,8 +85,8 @@ export default function ProjectUpdatesPage() {
         throw new Error(errorData.message || `Failed to add update (${response.status})`);
       }
 
-      const newUpdate = await response.json();
-      setUpdates([newUpdate, ...updates]);
+      const responseData = await response.json();
+      setUpdates([responseData.data, ...updates]);
       setTitle("");
       setDescription("");
       alert("Update added successfully!");

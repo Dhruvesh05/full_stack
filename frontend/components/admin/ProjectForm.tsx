@@ -10,6 +10,7 @@ interface ProjectFormProps {
     type: string;
     location: string;
     locationLink?: string;
+    map3dIframe?: string;
   };
 }
 
@@ -19,6 +20,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
   const [type, setType] = useState(initialData?.type || "");
   const [location, setLocation] = useState(initialData?.location || "");
   const [locationLink, setLocationLink] = useState(initialData?.locationLink || "");
+  const [map3dIframe, setMap3dIframe] = useState(initialData?.map3dIframe || "");
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -37,6 +39,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
       formData.append("type", type);
       formData.append("location", location);
       formData.append("locationLink", locationLink);
+      formData.append("map3dIframe", map3dIframe);
 
       if (image) formData.append("image", image);
 
@@ -50,11 +53,11 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
         method,
         body: formData
       });
+      const result = await response.json();
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: 'Failed to save project' }));
-        console.error('Backend error:', errorData);
-        throw new Error(errorData.message || "Failed to save project");
+        console.error('Backend error:', result);
+        throw new Error(result.message || "Failed to save project");
       }
 
       alert(projectId ? "Project Updated Successfully!" : "Project Added Successfully!");
@@ -65,6 +68,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
         setType("");
         setLocation("");
         setLocationLink("");
+        setMap3dIframe("");
         setImage(null);
         // Reset file input
         const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
@@ -139,6 +143,17 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
           onChange={(e) => setLocationLink(e.target.value)}
         />
         <p className="text-xs text-gray-500 mt-1">Example: https://maps.google.com/?q=Your+Location</p>
+      </div>
+
+      <div>
+        <label className="block mb-2 font-medium text-gray-900 text-sm sm:text-base">Google Maps 3D Iframe</label>
+        <textarea
+          placeholder='Paste full iframe code or embed URL (optional)'
+          value={map3dIframe}
+          className="border p-2 sm:p-3 w-full rounded text-gray-900 text-sm sm:text-base min-h-28"
+          onChange={(e) => setMap3dIframe(e.target.value)}
+        />
+        <p className="text-xs text-gray-500 mt-1">Example: &lt;iframe src=&quot;https://www.google.com/maps/embed?...&quot;&gt;&lt;/iframe&gt;</p>
       </div>
 
       <div>

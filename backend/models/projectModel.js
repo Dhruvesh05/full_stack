@@ -6,6 +6,7 @@ let projects = [
     type: "Residential",
     location: "Mumbai",
     locationLink: "https://maps.google.com/?q=Mumbai",
+    map3dIframe: "",
     image: null,
     updates: [],
     createdAt: new Date().toISOString()
@@ -16,6 +17,7 @@ let projects = [
     type: "Commercial",
     location: "Delhi",
     locationLink: "https://maps.google.com/?q=Delhi",
+    map3dIframe: "",
     image: null,
     updates: [],
     createdAt: new Date().toISOString()

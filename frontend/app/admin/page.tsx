@@ -11,8 +11,11 @@ export default function AdminDashboard() {
     const fetchStats = async () => {
       try {
         const res = await fetch("http://localhost:5000/api/projects");
-        const data = await res.json();
-        setProjectCount(data.length || 0);
+        const result = await res.json();
+        if (!res.ok) {
+          throw new Error(result.message || "Failed to load projects");
+        }
+        setProjectCount(result.data ? result.data.length : 0);
       } catch (error) {
         console.error("Failed to fetch stats:", error);
       } finally {

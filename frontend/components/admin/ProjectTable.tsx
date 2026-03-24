@@ -4,6 +4,27 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Project } from "@/types/project";
 
+const extractIframeSrc = (value?: string): string => {
+  if (!value) return "";
+
+  const normalized = value
+    .trim()
+    .replaceAll("&quot;", '"')
+    .replaceAll("&#34;", '"')
+    .replaceAll("&apos;", "'")
+    .replaceAll("&#39;", "'");
+
+  if (!normalized) return "";
+
+  const srcMatch = normalized.match(/src=["']([^"']+)["']/i);
+  if (srcMatch?.[1]) {
+    return srcMatch[1];
+  }
+
+  const urlMatch = normalized.match(/https?:\/\/[^\s"'<>]+/i);
+  return urlMatch?.[0] || "";
+};
+
 export default function ProjectTable(){
 
   const [projects, setProjects] = useState<Project[]>([]);
@@ -12,15 +33,15 @@ export default function ProjectTable(){
 
   useEffect(()=>{
     const fetchProjects = async ()=>{
-
       try {
-        const res = await fetch(
-          "http://localhost:5000/api/projects"
-        );
+        const res = await fetch("http://localhost:5000/api/projects");
+        const result = await res.json();
 
-        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(result.message || "Failed to load projects");
+        }
 
-        setProjects(data);
+        setProjects(result.data || []);
       } catch (error) {
         console.error("Failed to fetch projects:", error);
       } finally {
@@ -29,6 +50,9 @@ export default function ProjectTable(){
     };
 
     fetchProjects();
+
+    const intervalId = setInterval(fetchProjects, 5000);
+    return () => clearInterval(intervalId);
   },[]);
 
   const deleteProject = async(id:number)=>{
@@ -38,17 +62,26 @@ export default function ProjectTable(){
     }
 
     try {
-      await fetch(
-        `http://localhost:5000/api/projects/${id}`,
-        {method:"DELETE"}
-      );
+      const resDelete = await fetch(`http://localhost:5000/api/projects/${id}`, {
+        method: "DELETE"
+      });
+      const deleteResult = await resDelete.json();
+
+      if (!resDelete.ok) {
+        throw new Error(deleteResult.message || "Failed to delete project");
+      }
 
       // Refresh the projects list
       const res = await fetch("http://localhost:5000/api/projects");
-      const data = await res.json();
-      setProjects(data);
+      const result = await res.json();
       
-      alert("Project deleted successfully!");
+      if (!res.ok) {
+        throw new Error(result.message || "Failed to load projects");
+      }
+      
+      setProjects(result.data || []);
+      
+      alert(deleteResult.message || "Project deleted successfully!");
     } catch (error) {
       console.error("Failed to delete project:", error);
       alert("Failed to delete project. Please try again.");
@@ -93,6 +126,7 @@ export default function ProjectTable(){
               <th className="p-3 text-left text-gray-900">Type</th>
               <th className="p-3 text-left text-gray-900">Location</th>
               <th className="p-3 text-left text-gray-900">Location Link</th>
+              <th className="p-3 text-left text-gray-900">Interactive 3D Map</th>
               <th className="p-3 text-left text-gray-900">Actions</th>
             </tr>
           </thead>
@@ -102,47 +136,75 @@ export default function ProjectTable(){
             {projects.map((p: Project)=>(
               <tr key={p.id} className="border-b hover:bg-gray-50">
 
-                <td className="p-3 text-gray-900">{p.id}</td>
-                <td className="p-3 text-gray-900">{p.name}</td>
-                <td className="p-3 text-gray-900">{p.type}</td>
-                <td className="p-3 text-gray-900">{p.location}</td>
-                <td className="p-3">
-                  {p.locationLink ? (
-                    <a 
-                      href={p.locationLink} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800 underline"
-                    >
-                      View Map
-                    </a>
-                  ) : (
-                    <span className="text-gray-400">-</span>
-                  )}
-                </td>
+                {(() => {
+                  const map3dSrc = extractIframeSrc(p.map3dIframe);
 
-                <td className="p-3">
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      onClick={()=>handleEdit(p.id)}
-                      className="text-blue-600 hover:text-blue-800 font-medium whitespace-nowrap"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={()=>handleManageUpdates(p.id)}
-                      className="text-green-600 hover:text-green-800 font-medium whitespace-nowrap"
-                    >
-                      Updates
-                    </button>
-                    <button
-                      onClick={()=>deleteProject(p.id)}
-                      className="text-red-600 hover:text-red-800 font-medium whitespace-nowrap"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </td>
+                  return (
+                    <>
+
+                      <td className="p-3 text-gray-900">{p.id}</td>
+                      <td className="p-3 text-gray-900">{p.name}</td>
+                      <td className="p-3 text-gray-900">{p.type}</td>
+                      <td className="p-3 text-gray-900">{p.location}</td>
+                      <td className="p-3">
+                        {p.locationLink ? (
+                          <a
+                            href={p.locationLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:text-blue-800 underline"
+                            title={p.locationLink}
+                          >
+                            View Location
+                          </a>
+                        ) : (
+                          <span className="text-gray-400">-</span>
+                        )}
+                      </td>
+                      <td className="p-3">
+                        {map3dSrc ? (
+                          <iframe
+                            src={map3dSrc}
+                            width="280"
+                            height="160"
+                            style={{ border: 0 }}
+                            allowFullScreen
+                            loading="lazy"
+                            referrerPolicy="no-referrer-when-downgrade"
+                            className="rounded-md"
+                            title={`${p.name} 3D preview`}
+                          />
+                        ) : (
+                          <span className="text-gray-400">-</span>
+                        )}
+                      </td>
+
+                      <td className="p-3">
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            onClick={()=>handleEdit(p.id)}
+                            className="text-blue-600 hover:text-blue-800 font-medium whitespace-nowrap"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={()=>handleManageUpdates(p.id)}
+                            className="text-green-600 hover:text-green-800 font-medium whitespace-nowrap"
+                          >
+                            Updates
+                          </button>
+                          <button
+                            onClick={()=>deleteProject(p.id)}
+                            className="text-red-600 hover:text-red-800 font-medium whitespace-nowrap"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+
+                    </>
+                  );
+                })()}
 
               </tr>
             ))}
@@ -179,16 +241,36 @@ export default function ProjectTable(){
               
               {p.locationLink && (
                 <div>
+                  <span className="text-xs text-gray-500 uppercase">Location Link</span>
                   <a 
                     href={p.locationLink} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-800 underline text-sm"
+                    className="block text-blue-600 hover:text-blue-800 underline text-sm"
                   >
                     View on Map
                   </a>
                 </div>
               )}
+
+              <div>
+                <span className="text-xs text-gray-500 uppercase">Interactive 3D Map</span>
+                {extractIframeSrc(p.map3dIframe) ? (
+                  <iframe
+                    src={extractIframeSrc(p.map3dIframe)}
+                    width="100%"
+                    height="180"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    className="block w-full rounded-md mt-1"
+                    title={`${p.name} 3D preview mobile`}
+                  />
+                ) : (
+                  <p className="text-gray-400">-</p>
+                )}
+              </div>
 
               <div className="flex gap-3 pt-2">
                 <button
