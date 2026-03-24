@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://shubh-construction.onrender.com"),
+  metadataBase: new URL("http://localhost:3000"),
 
   title: {
     default: "Shubh Construction | Civil & Industrial Construction Company",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Shubh Construction",
     description: "Civil & industrial construction company in Bharuch, Gujarat",
-    url: "https://shubh-construction.onrender.com",
+    url: "http://localhost:3000",
     siteName: "Shubh Construction",
     images: [
       {
@@ -49,8 +49,8 @@ export const metadata: Metadata = {
       "@context": "https://schema.org",
       "@type": ["LocalBusiness", "ConstructionCompany"],
       name: "Shubh Construction",
-      url: "https://shubh-construction.onrender.com",
-      logo: "https://shubh-construction.onrender.com/shubh-construction-logo.png",
+      url: "http://localhost:3000",
+      logo: "http://localhost:3000/shubh-construction-logo.png",
       telephone: "+919601940724",
       email: "J.talpada@shubhconstructions.com",
       address: {

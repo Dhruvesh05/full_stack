@@ -11,8 +11,7 @@ interface ProjectDetailModalProps {
   onClose: () => void;
 }
 
-const BACKEND_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE || "https://shubh-construction.onrender.com";
+const BACKEND_BASE_URL = "http://localhost:5000";
 const FALLBACK_IMAGE = "/projects_photo/Abbott Canola Work.png";
 
 const encodePathSegments = (path: string) =>
@@ -75,7 +74,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
     
     setLoading(true);
     try {
-      const response = await fetch(`${BACKEND_BASE_URL}/api/projects/${project.id}/updates`);
+      const response = await fetch(`http://localhost:5000/api/projects/${project.id}/updates`);
       const result = await response.json();
       
       if (!response.ok) {

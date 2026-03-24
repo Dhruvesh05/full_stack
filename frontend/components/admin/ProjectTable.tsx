@@ -27,9 +27,6 @@ const extractIframeSrc = (value?: string): string => {
 
 export default function ProjectTable(){
 
-  const API_BASE =
-    process.env.NEXT_PUBLIC_API_BASE || "https://shubh-construction.onrender.com";
-
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -37,7 +34,7 @@ export default function ProjectTable(){
   useEffect(()=>{
     const fetchProjects = async ()=>{
       try {
-        const res = await fetch(`${API_BASE}/api/projects`);
+        const res = await fetch("http://localhost:5000/api/projects");
         const result = await res.json();
 
         if (!res.ok) {
@@ -65,7 +62,7 @@ export default function ProjectTable(){
     }
 
     try {
-      const resDelete = await fetch(`${API_BASE}/api/projects/${id}`, {
+      const resDelete = await fetch(`http://localhost:5000/api/projects/${id}`, {
         method: "DELETE"
       });
       const deleteResult = await resDelete.json();
@@ -75,7 +72,7 @@ export default function ProjectTable(){
       }
 
       // Refresh the projects list
-      const res = await fetch(`${API_BASE}/api/projects`);
+      const res = await fetch("http://localhost:5000/api/projects");
       const result = await res.json();
       
       if (!res.ok) {

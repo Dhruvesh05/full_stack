@@ -42,10 +42,6 @@ const Page = () => {
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
-  const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
-  const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -53,19 +49,12 @@ const Page = () => {
     setError(null);
     const form = formRef.current;
     if (!form) return;
-
-    if (!serviceId || !templateId || !publicKey) {
-      setError("Email service is not configured. Please try again later.");
-      setLoading(false);
-      return;
-    }
-
     try {
       await emailjs.sendForm(
-        serviceId,
-        templateId,
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
         form,
-        publicKey
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
       );
       setSuccess("Message sent successfully!");
       form.reset();

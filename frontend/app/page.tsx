@@ -15,15 +15,15 @@ export const metadata: Metadata = {
     "construction company in India",
     "industrial contractors",
   ],
-  metadataBase: new URL("https://shubh-construction.onrender.com"),
+  metadataBase: new URL("http://localhost:3000"),
   alternates: {
-    canonical: "https://shubh-construction.onrender.com",
+    canonical: "http://localhost:3000",
   },
   openGraph: {
     title: "Shubh Construction | Civil & Industrial Experts",
     description:
       "Delivering excellence in civil and industrial construction with quality, safety, and timely delivery.",
-    url: "https://shubh-construction.onrender.com",
+    url: "http://localhost:3000",
     siteName: "Shubh Construction",
     images: [
       {

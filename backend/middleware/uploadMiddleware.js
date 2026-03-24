@@ -101,11 +101,9 @@ const wrappedUpload = {
         next();
       } catch (error) {
         console.error("❌ Cloudinary Error:", error.message);
-
-        return res.status(500).json({
-          success: false,
-          message: "Cloudinary upload failed",
-        });
+        // Fallback: allow request to proceed without image
+        req.uploadedFile = null;
+        next();
       }
     });
   },

@@ -8,8 +8,6 @@ export default function UploadsPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const API_BASE =
-    process.env.NEXT_PUBLIC_API_BASE || "https://shubh-construction.onrender.com";
 
   const handleUpload = async () => {
 
@@ -26,7 +24,7 @@ export default function UploadsPage() {
       const formData = new FormData();
       formData.append("image", image);
 
-      const response = await fetch(`${API_BASE}/api/uploads`, {
+      const response = await fetch("http://localhost:5000/api/uploads", {
         method: "POST",
         body: formData
       });

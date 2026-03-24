@@ -7,7 +7,7 @@ import pool from "./config/db.js";
 dotenv.config();
 
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || 
-  'https://shubh-construction.vercel.app,https://shubh-construction.onrender.com'
+  'http://localhost:3000,http://localhost:5000'
 ).split(',')
  .map(origin => origin.trim())
  .filter(Boolean);
@@ -19,7 +19,7 @@ pool.query("SELECT NOW()")
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS with allowlist for deployed frontends
+// CORS with allowlist for localhost
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -33,7 +33,6 @@ const corsOptions = {
 
 // Middleware
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
