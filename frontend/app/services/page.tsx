@@ -21,13 +21,13 @@ export const metadata: Metadata = {
     "Shubh Construction services",
   ],
   alternates: {
-    canonical: "https://shubhconstructions.com/services",
+    canonical: "https://shubh-construction.onrender.com/services",
   },
   openGraph: {
     title: "Our Services | Shubh Construction",
     description:
       "Comprehensive civil and industrial construction services delivered by Shubh Construction with expertise and precision.",
-    url: "https://shubhconstructions.com/services",
+    url: "https://shubh-construction.onrender.com/services",
     siteName: "Shubh Construction",
     images: [
       {
@@ -232,7 +232,7 @@ const page = () => {
             "@context": "https://schema.org",
             "@type": "ConstructionCompany",
             name: "Shubh Construction",
-            url: "https://shubhconstructions.com",
+            url: "https://shubh-construction.onrender.com",
             description:
               "Shubh Construction provides civil, industrial, and mechanical construction services with a focus on quality, safety, and timely delivery.",
             hasOfferCatalog: {

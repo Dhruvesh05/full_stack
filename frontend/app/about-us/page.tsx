@@ -19,13 +19,13 @@ export const metadata: Metadata = {
     "civil contractors",
   ],
   alternates: {
-    canonical: "https://shubhconstructions.com/about-us",
+    canonical: "https://shubh-construction.onrender.com/about-us",
   },
   openGraph: {
     title: "About Shubh Construction | Civil Construction Experts",
     description:
       "Discover Shubh Construction’s mission, vision, and core values. Delivering quality civil and industrial construction projects since 2017.",
-    url: "https://shubhconstructions.com/about-us",
+    url: "https://shubh-construction.onrender.com/about-us",
     siteName: "Shubh Construction",
     images: [
       {
