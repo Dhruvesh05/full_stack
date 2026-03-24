@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Project, ProjectUpdate } from "@/types/project";
 
-export default function ProjectUpdatesPage() {
+function ProjectUpdatesInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const projectId = searchParams.get('id');
+  const API_BASE =
+    process.env.NEXT_PUBLIC_API_BASE || "https://shubh-construction.onrender.com";
   
   const [project, setProject] = useState<Project | null>(null);
   const [updates, setUpdates] = useState<ProjectUpdate[]>([]);
@@ -29,7 +31,7 @@ export default function ProjectUpdatesPage() {
     const fetchData = async () => {
       try {
         // Fetch project details
-        const projectRes = await fetch(`http://localhost:5000/api/projects/${projectId}`);
+        const projectRes = await fetch(`${API_BASE}/api/projects/${projectId}`);
         const projectResult = await projectRes.json();
         
         if (!projectRes.ok) {
@@ -40,7 +42,7 @@ export default function ProjectUpdatesPage() {
         setProject(projectResult.data);
 
         // Fetch updates
-        const updatesRes = await fetch(`http://localhost:5000/api/projects/${projectId}/updates`);
+        const updatesRes = await fetch(`${API_BASE}/api/projects/${projectId}/updates`);
         const updatesResult = await updatesRes.json();
         
         if (updatesRes.ok) {
@@ -72,7 +74,7 @@ export default function ProjectUpdatesPage() {
     setError("");
 
     try {
-      const response = await fetch(`http://localhost:5000/api/projects/${projectId}/updates`, {
+      const response = await fetch(`${API_BASE}/api/projects/${projectId}/updates`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -106,7 +108,7 @@ export default function ProjectUpdatesPage() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/projects/${projectId}/updates/${updateId}`,
+        `${API_BASE}/api/projects/${projectId}/updates/${updateId}`,
         { method: "DELETE" }
       );
 
@@ -259,5 +261,13 @@ export default function ProjectUpdatesPage() {
       </div>
 
     </div>
+  );
+}
+
+export default function ProjectUpdatesPage() {
+  return (
+    <Suspense fallback={<div className="max-w-7xl mx-auto"><div className="text-gray-600">Loading...</div></div>}>
+      <ProjectUpdatesInner />
+    </Suspense>
   );
 }

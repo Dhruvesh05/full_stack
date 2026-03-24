@@ -6,11 +6,13 @@ import Link from "next/link";
 export default function AdminDashboard() {
   const [projectCount, setProjectCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
+  const API_BASE =
+    process.env.NEXT_PUBLIC_API_BASE || "https://shubh-construction.onrender.com";
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/projects");
+        const res = await fetch(`${API_BASE}/api/projects`);
         const result = await res.json();
         if (!res.ok) {
           throw new Error(result.message || "Failed to load projects");

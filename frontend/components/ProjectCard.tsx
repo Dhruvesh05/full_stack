@@ -19,7 +19,8 @@ interface Project {
   map3dIframe?: string;
 }
 
-const BACKEND_BASE_URL = "http://localhost:5000";
+const BACKEND_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE || "https://shubh-construction.onrender.com";
 const FALLBACK_IMAGE = "/projects_photo/Abbott Canola Work.png";
 
 const encodePathSegments = (path: string) =>
@@ -285,7 +286,7 @@ const ProjectCard = () => {
     useEffect(() => {
       const fetchProjects = async () => {
         try {
-          const res = await fetch("http://localhost:5000/api/projects");
+          const res = await fetch(`${BACKEND_BASE_URL}/api/projects`);
           const result = await res.json();
 
           if (!res.ok) {

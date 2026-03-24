@@ -6,6 +6,12 @@ import pool from "./config/db.js";
 
 dotenv.config();
 
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || 
+  'https://shubh-construction.vercel.app,https://shubh-construction.onrender.com'
+).split(',')
+ .map(origin => origin.trim())
+ .filter(Boolean);
+
 pool.query("SELECT NOW()")
   .then(res => console.log("✅ DB Connected:", res.rows[0]))
   .catch(err => console.error("❌ DB Error:", err));
@@ -13,8 +19,21 @@ pool.query("SELECT NOW()")
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// CORS with allowlist for deployed frontends
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    console.warn(`🌐 [CORS] Blocked origin: ${origin}`);
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 

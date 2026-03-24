@@ -43,9 +43,11 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
 
       if (image) formData.append("image", image);
 
+      const base =
+        process.env.NEXT_PUBLIC_API_BASE || "https://shubh-construction.onrender.com";
       const url = projectId
-        ? `http://localhost:5000/api/projects/${projectId}`
-        : "http://localhost:5000/api/projects";
+        ? `${base}/api/projects/${projectId}`
+        : `${base}/api/projects`;
 
       const method = projectId ? "PUT" : "POST";
 

@@ -1,16 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import ProjectForm from "@/components/admin/ProjectForm";
 import { Project } from "@/types/project";
 
-export default function EditProjectPage() {
+function EditProjectInner() {
   const searchParams = useSearchParams();
   const projectId = searchParams.get('id');
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
+  const API_BASE =
+    process.env.NEXT_PUBLIC_API_BASE || "https://shubh-construction.onrender.com";
 
   useEffect(() => {
     if (!projectId) {
@@ -20,7 +22,7 @@ export default function EditProjectPage() {
 
     const fetchProject = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/projects/${projectId}`);
+        const res = await fetch(`${API_BASE}/api/projects/${projectId}`);
         const result = await res.json();
         
         if (!res.ok) {
@@ -86,5 +88,13 @@ export default function EditProjectPage() {
       />
 
     </div>
+  );
+}
+
+export default function EditProjectPage() {
+  return (
+    <Suspense fallback={<div className="max-w-7xl mx-auto"><div className="text-gray-600">Loading...</div></div>}>
+      <EditProjectInner />
+    </Suspense>
   );
 }
