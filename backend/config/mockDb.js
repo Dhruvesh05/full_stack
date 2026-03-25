@@ -44,8 +44,8 @@ const mockDb = {
       };
     }
     
-    // READ - SELECT all projects
-    if (queryText.includes('SELECT') && !queryText.includes('WHERE')) {
+    // READ - SELECT projects (with or without WHERE/JOIN)
+    if (queryText.includes('FROM projects')) {
       const filteredProjects = projects
         .filter(p => !p.is_deleted)
         .map(p => ({
@@ -63,7 +63,16 @@ const mockDb = {
           updatedAt: p.updated_at
         }))
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      
+
+      // If a WHERE clause is present with id = $1, handle it here too
+      if (queryText.includes('WHERE') && params.length === 1) {
+        const [id] = params;
+        const match = filteredProjects.find(p => p.id === parseInt(id));
+        const rows = match ? [match] : [];
+        console.log(`✅ [MOCK-DB] Retrieved project by id ${id} (${rows.length ? 'found' : 'not found'})`);
+        return { rows, rowCount: rows.length };
+      }
+
       console.log(`✅ [MOCK-DB] Retrieved ${filteredProjects.length} projects`);
       return {
         rows: filteredProjects,

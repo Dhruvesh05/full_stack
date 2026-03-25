@@ -33,6 +33,17 @@ const poolConfig = process.env.DATABASE_URL
       keepalivesIdle: 30
     };
 
+const isConnectionError = (err = {}) => {
+  const msg = String(err.message || '').toLowerCase();
+  return [
+    'timeout',
+    'terminat',
+    'refused',
+    'getaddrinfo',
+    'not support ssl'
+  ].some(keyword => msg.includes(keyword)) || ['ECONNREFUSED', 'ENOTFOUND', 'ETIMEDOUT'].includes(err.code);
+};
+
 console.log('🔍 Database Config:', {
   mode: process.env.DATABASE_URL ? 'DATABASE_URL' : 'Individual Parameters',
   host: process.env.DATABASE_URL ? 'Using connection string' : process.env.DATABASE_HOST,
@@ -76,6 +87,28 @@ setTimeout(() => {
   }
 }, 1000);
 
-// Export either real pool or mock db
-const  exportDb = useMockDb || !pool ? mockDb : pool;
-export default exportDb;
+// Wrapper that falls back to mock DB on connection errors
+const wrappedDb = {
+  query: async (text, params = []) => {
+    if (useMockDb || !pool) {
+      return mockDb.query(text, params);
+    }
+    try {
+      return await pool.query(text, params);
+    } catch (err) {
+      if (isConnectionError(err)) {
+        console.warn('⚠️  DB connection issue detected, switching to MOCK DB for this request');
+        useMockDb = true;
+        return mockDb.query(text, params);
+      }
+      throw err;
+    }
+  },
+  end: async () => {
+    if (pool) {
+      try { await pool.end(); } catch (err) { console.error('Pool end error:', err.message); }
+    }
+  }
+};
+
+export default wrappedDb;
