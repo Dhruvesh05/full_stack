@@ -6,8 +6,9 @@ import pool from "./config/db.js";
 
 dotenv.config();
 
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || 
-  'http://localhost:3000,http://localhost:5000'
+// CORS allowlist (prod + local). Configure via ALLOWED_ORIGINS env (comma-separated).
+const allowedOrigins = (process.env.ALLOWED_ORIGINS ||
+  'http://localhost:3000,http://localhost:5000,https://shubh-cons.vercel.app'
 ).split(',')
  .map(origin => origin.trim())
  .filter(Boolean);
@@ -19,7 +20,7 @@ pool.query("SELECT NOW()")
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS with allowlist for localhost
+// CORS with explicit allowlist and methods/headers for prod + local
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -28,11 +29,16 @@ const corsOptions = {
     console.warn(`🌐 [CORS] Blocked origin: ${origin}`);
     return callback(new Error('Not allowed by CORS'));
   },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
+  optionsSuccessStatus: 200,
 };
 
 // Middleware
 app.use(cors(corsOptions));
+// Preflight for all routes
+app.options('*', cors(corsOptions));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
