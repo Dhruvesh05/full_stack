@@ -4,6 +4,7 @@ import { FiTarget } from "react-icons/fi";
 import { IoEyeOutline, IoRibbonOutline } from "react-icons/io5";
 import { TiTickOutline } from "react-icons/ti";
 import type { Metadata } from "next";
+import { buildUrl } from "@/utils/config";
 
 export const metadata: Metadata = {
   title: "About Shubh Construction | Trusted Civil Contractors Since 2017",
@@ -19,13 +20,13 @@ export const metadata: Metadata = {
     "civil contractors",
   ],
   alternates: {
-    canonical: "http://localhost:3000/about-us",
+    canonical: buildUrl("/about-us"),
   },
   openGraph: {
     title: "About Shubh Construction | Civil Construction Experts",
     description:
       "Discover Shubh Construction’s mission, vision, and core values. Delivering quality civil and industrial construction projects since 2017.",
-    url: "http://localhost:3000/about-us",
+    url: buildUrl("/about-us"),
     siteName: "Shubh Construction",
     images: [
       {
@@ -166,7 +167,7 @@ const Page = () => {
               <div
                 key={section.title}
                 className="bg-white md:min-h-105 lg:min-h-90 min-h-12 p-8 rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300
-                outline outline-2 outline-red-700 outline-offset-[-8px]"
+                outline-2 outline-red-700 -outline-offset-8"
               >
                 <section.icon
                   aria-hidden="true"

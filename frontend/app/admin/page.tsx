@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { buildApiUrl } from "@/utils/config";
 
 export default function AdminDashboard() {
   const [projectCount, setProjectCount] = useState<number>(0);
@@ -10,7 +11,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/projects");
+        const res = await fetch(buildApiUrl("/api/projects"));
         const result = await res.json();
         if (!res.ok) {
           throw new Error(result.message || "Failed to load projects");

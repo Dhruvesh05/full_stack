@@ -3,6 +3,7 @@ import ProjectCard from "@/components/ProjectCard";
 import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
+import { buildUrl } from "@/utils/config";
 
 export const metadata: Metadata = {
   title: "Our Projects | Shubh Construction – Civil & Industrial Works",
@@ -17,13 +18,13 @@ export const metadata: Metadata = {
     "construction company projects",
   ],
   alternates: {
-    canonical: "http://localhost:3000/project",
+    canonical: buildUrl("/project"),
   },
   openGraph: {
     title: "Our Projects | Shubh Construction",
     description:
       "A showcase of completed civil and industrial construction projects delivered by Shubh Construction with excellence.",
-    url: "http://localhost:3000/project",
+    url: buildUrl("/project"),
     siteName: "Shubh Construction",
     images: [
       {
@@ -140,7 +141,7 @@ const page = () => {
         <AnimateOnScroll direction="up" delay={0.3}>
           {Certificates.map((cert, index) => (
             <div key={index} className="flex justify-center pb-10">
-              <div className="relative w-full max-w-md aspect-[3/2]">
+              <div className="relative w-full max-w-md aspect-3/2">
                 <Image
                   src={cert.image}
                   alt={cert.alt}

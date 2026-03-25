@@ -6,6 +6,7 @@ import { LuNotepadText } from "react-icons/lu";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import Link from 'next/link';
 import type { Metadata } from "next";
+import { SITE_URL, buildUrl } from "@/utils/config";
 
 export const metadata: Metadata = {
   title: "Our Services | Shubh Construction – Civil & Industrial Experts",
@@ -21,13 +22,13 @@ export const metadata: Metadata = {
     "Shubh Construction services",
   ],
   alternates: {
-    canonical: "http://localhost:3000/services",
+    canonical: buildUrl("/services"),
   },
   openGraph: {
     title: "Our Services | Shubh Construction",
     description:
       "Comprehensive civil and industrial construction services delivered by Shubh Construction with expertise and precision.",
-    url: "http://localhost:3000/services",
+    url: buildUrl("/services"),
     siteName: "Shubh Construction",
     images: [
       {
@@ -146,7 +147,7 @@ const page = () => {
             >
               <div
                 key={index}
-                className="mx-auto outline outline-1 outline-red-700 outline-offset-[-8px] md:min-h-102 md:max-h-102 flex flex-col gap-3 bg-white border border-gray-300 leading-relaxed rounded-lg p-6 mb-8 hover:shadow-xl hover:scale-105 transition-all duration-300"
+                className="mx-auto outline-1 outline-red-700 -outline-offset-8 md:min-h-102 md:max-h-102 flex flex-col gap-3 bg-white border border-gray-300 leading-relaxed rounded-lg p-6 mb-8 hover:shadow-xl hover:scale-105 transition-all duration-300"
               >
                 <service.icon
                   aria-hidden="true"
@@ -232,7 +233,7 @@ const page = () => {
             "@context": "https://schema.org",
             "@type": "ConstructionCompany",
             name: "Shubh Construction",
-            url: "http://localhost:3000",
+            url: SITE_URL,
             description:
               "Shubh Construction provides civil, industrial, and mechanical construction services with a focus on quality, safety, and timely delivery.",
             hasOfferCatalog: {

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { X, MapPin, Calendar } from "lucide-react";
+import { API_BASE_URL, buildApiUrl } from "@/utils/config";
 import { Project, ProjectUpdate } from "@/types/project";
 
 interface ProjectDetailModalProps {
@@ -11,7 +12,6 @@ interface ProjectDetailModalProps {
   onClose: () => void;
 }
 
-const BACKEND_BASE_URL = "http://localhost:5000";
 const FALLBACK_IMAGE = "/projects_photo/Abbott Canola Work.png";
 
 const encodePathSegments = (path: string) =>
@@ -39,7 +39,7 @@ const getProjectImageSrc = (project: Project): string => {
   const isApiProject = typeof project.id === "number" && project.id > 0;
   if (isApiProject) {
     const normalizedPath = rawImage.startsWith("/") ? rawImage : `/${rawImage}`;
-    return `${BACKEND_BASE_URL}${encodeURI(normalizedPath)}`;
+    return `${API_BASE_URL}${encodeURI(normalizedPath)}`;
   }
 
   return `/projects_photo/${encodePathSegments(rawImage)}`;
@@ -80,7 +80,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
     
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/projects/${project.id}/updates`);
+      const response = await fetch(buildApiUrl(`/api/projects/${project.id}/updates`));
       const result = await response.json();
       
       if (!response.ok) {
@@ -187,7 +187,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
             <div className="w-full">
               <h3 className="text-lg font-semibold text-gray-900 mb-3">Interactive 3D Location Map</h3>
               {!showMap ? (
-                <div className="rounded-xl shadow-lg h-64 w-full bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center p-6 text-center border-2 border-red-200">
+                <div className="rounded-xl shadow-lg h-64 w-full bg-linear-to-br from-red-50 to-red-100 flex items-center justify-center p-6 text-center border-2 border-red-200">
                   <div>
                     <p className="text-gray-700 font-medium mb-4">Click below to view the 3D location map</p>
                     <button

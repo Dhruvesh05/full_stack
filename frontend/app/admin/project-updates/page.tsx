@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Project, ProjectUpdate } from "@/types/project";
+import { buildApiUrl } from "@/utils/config";
 
 export default function ProjectUpdatesPage() {
   const searchParams = useSearchParams();
@@ -29,7 +30,7 @@ export default function ProjectUpdatesPage() {
     const fetchData = async () => {
       try {
         // Fetch project details
-        const projectRes = await fetch(`http://localhost:5000/api/projects/${projectId}`);
+        const projectRes = await fetch(buildApiUrl(`/api/projects/${projectId}`));
         const projectResult = await projectRes.json();
         
         if (!projectRes.ok) {
@@ -40,7 +41,7 @@ export default function ProjectUpdatesPage() {
         setProject(projectResult.data);
 
         // Fetch updates
-        const updatesRes = await fetch(`http://localhost:5000/api/projects/${projectId}/updates`);
+        const updatesRes = await fetch(buildApiUrl(`/api/projects/${projectId}/updates`));
         const updatesResult = await updatesRes.json();
         
         if (updatesRes.ok) {
@@ -72,7 +73,7 @@ export default function ProjectUpdatesPage() {
     setError("");
 
     try {
-      const response = await fetch(`http://localhost:5000/api/projects/${projectId}/updates`, {
+      const response = await fetch(buildApiUrl(`/api/projects/${projectId}/updates`), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -106,7 +107,7 @@ export default function ProjectUpdatesPage() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/projects/${projectId}/updates/${updateId}`,
+        buildApiUrl(`/api/projects/${projectId}/updates/${updateId}`),
         { method: "DELETE" }
       );
 

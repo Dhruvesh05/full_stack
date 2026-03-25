@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { buildApiUrl } from "@/utils/config";
 
 interface ProjectFormProps {
   projectId?: string;
@@ -44,8 +45,8 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
       if (image) formData.append("image", image);
 
       const url = projectId
-        ? `http://localhost:5000/api/projects/${projectId}`
-        : "http://localhost:5000/api/projects";
+        ? buildApiUrl(`/api/projects/${projectId}`)
+        : buildApiUrl("/api/projects");
 
       const method = projectId ? "PUT" : "POST";
 

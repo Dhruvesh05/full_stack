@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import ProjectForm from "@/components/admin/ProjectForm";
 import { Project } from "@/types/project";
+import { buildApiUrl } from "@/utils/config";
 
 export default function EditProjectPage() {
   const searchParams = useSearchParams();
@@ -20,7 +21,7 @@ export default function EditProjectPage() {
 
     const fetchProject = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/projects/${projectId}`);
+        const res = await fetch(buildApiUrl(`/api/projects/${projectId}`));
         const result = await res.json();
         
         if (!res.ok) {

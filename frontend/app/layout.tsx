@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 import TopButton from '@/components/TopButton';
 import CallButton from "@/components/CallButton";
+import { SITE_URL } from "@/utils/config";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("http://localhost:3000"),
+  metadataBase: new URL(SITE_URL),
 
   title: {
     default: "Shubh Construction | Civil & Industrial Construction Company",
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Shubh Construction",
     description: "Civil & industrial construction company in Bharuch, Gujarat",
-    url: "http://localhost:3000",
+    url: SITE_URL,
     siteName: "Shubh Construction",
     images: [
       {
@@ -49,8 +50,8 @@ export const metadata: Metadata = {
       "@context": "https://schema.org",
       "@type": ["LocalBusiness", "ConstructionCompany"],
       name: "Shubh Construction",
-      url: "http://localhost:3000",
-      logo: "http://localhost:3000/shubh-construction-logo.png",
+      url: SITE_URL,
+      logo: `${SITE_URL}/shubh-construction-logo.png`,
       telephone: "+919601940724",
       email: "J.talpada@shubhconstructions.com",
       address: {

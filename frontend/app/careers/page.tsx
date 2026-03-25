@@ -2,6 +2,7 @@
 import React, { useState, useRef } from "react";
 import AnimateOnScroll from "../../components/AnimateOnScroll";
 import { CheckCircle2 } from 'lucide-react';
+import { buildApiUrl } from "@/utils/config";
 
 
 
@@ -45,9 +46,7 @@ const Page = () => {
     const form = e.currentTarget;
     const formData = new FormData(form);
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000"}/api/job-application`,
-        {
+      const res = await fetch(buildApiUrl("/api/job-application"), {
         method: "POST",
         body: formData,
       });

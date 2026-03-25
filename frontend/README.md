@@ -34,3 +34,20 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Environment
+
+Set the following environment variables (see `.env.example`):
+
+- `NEXT_PUBLIC_SITE_URL` – fully qualified site URL (e.g., https://example.com)
+- `NEXT_PUBLIC_API_BASE_URL` – backend base URL the frontend should call
+- EmailJS public keys: `NEXT_PUBLIC_EMAILJS_PUBLIC_KEY`, `NEXT_PUBLIC_EMAILJS_SERVICE_ID`, `NEXT_PUBLIC_EMAILJS_TEMPLATE_ID`
+
+## Production build
+
+```bash
+npm run build
+npm run start
+```
+
+Ensure the backend is reachable at `NEXT_PUBLIC_API_BASE_URL` and that image hosts used by your backend are whitelisted via `NEXT_PUBLIC_API_BASE_URL`/`NEXT_PUBLIC_SITE_URL` in `next.config.ts`.

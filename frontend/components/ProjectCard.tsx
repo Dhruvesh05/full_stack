@@ -5,6 +5,7 @@ import Image from "next/image";
 import { MapPin } from "lucide-react";
 import AnimateOnScroll from './AnimateOnScroll';
 import ProjectDetailModal from './ProjectDetailModal';
+import { API_BASE_URL, buildApiUrl } from "@/utils/config";
 import { Project as ProjectType } from '@/types/project';
 
 interface Project {
@@ -19,7 +20,6 @@ interface Project {
   map3dIframe?: string;
 }
 
-const BACKEND_BASE_URL = "http://localhost:5000";
 const FALLBACK_IMAGE = "/projects_photo/Abbott Canola Work.png";
 
 const encodePathSegments = (path: string) =>
@@ -47,7 +47,7 @@ const getProjectImageSrc = (project: Project): string => {
   const isApiProject = typeof project.id === "number" && project.id > 0;
   if (isApiProject) {
     const normalizedPath = rawImage.startsWith("/") ? rawImage : `/${rawImage}`;
-    return `${BACKEND_BASE_URL}${encodeURI(normalizedPath)}`;
+    return `${API_BASE_URL}${encodeURI(normalizedPath)}`;
   }
 
   return `/projects_photo/${encodePathSegments(rawImage)}`;
@@ -260,7 +260,7 @@ const ProjectCard = () => {
     useEffect(() => {
       const fetchProjects = async () => {
         try {
-          const res = await fetch("http://localhost:5000/api/projects");
+          const res = await fetch(buildApiUrl("/api/projects"));
           const result = await res.json();
 
           if (!res.ok) {

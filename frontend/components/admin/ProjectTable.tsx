@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Project } from "@/types/project";
+import { buildApiUrl } from "@/utils/config";
 
 const extractIframeSrc = (value?: string): string => {
   if (!value) return "";
@@ -34,7 +35,7 @@ export default function ProjectTable(){
   useEffect(()=>{
     const fetchProjects = async ()=>{
       try {
-        const res = await fetch("http://localhost:5000/api/projects");
+        const res = await fetch(buildApiUrl("/api/projects"));
         const result = await res.json();
 
         if (!res.ok) {
@@ -62,7 +63,7 @@ export default function ProjectTable(){
     }
 
     try {
-      const resDelete = await fetch(`http://localhost:5000/api/projects/${id}`, {
+      const resDelete = await fetch(buildApiUrl(`/api/projects/${id}`), {
         method: "DELETE"
       });
       const deleteResult = await resDelete.json();
@@ -72,7 +73,7 @@ export default function ProjectTable(){
       }
 
       // Refresh the projects list
-      const res = await fetch("http://localhost:5000/api/projects");
+      const res = await fetch(buildApiUrl("/api/projects"));
       const result = await res.json();
       
       if (!res.ok) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { buildApiUrl } from "@/utils/config";
 
 export default function UploadsPage() {
 
@@ -24,7 +25,7 @@ export default function UploadsPage() {
       const formData = new FormData();
       formData.append("image", image);
 
-      const response = await fetch("http://localhost:5000/api/uploads", {
+      const response = await fetch(buildApiUrl("/api/uploads"), {
         method: "POST",
         body: formData
       });
