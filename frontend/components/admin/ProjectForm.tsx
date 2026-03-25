@@ -137,7 +137,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
         <label className="block mb-2 font-medium text-gray-900 text-sm sm:text-base">Location Link (Google Maps)</label>
         <input
           type="url"
-          placeholder="Enter Google Maps link (optional)"
+          placeholder="Enter 3D View link (optional)"
           value={locationLink}
           className="border p-2 sm:p-3 w-full rounded text-gray-900 text-sm sm:text-base"
           onChange={(e) => setLocationLink(e.target.value)}
@@ -146,7 +146,7 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
       </div>
 
       <div>
-        <label className="block mb-2 font-medium text-gray-900 text-sm sm:text-base">Google Maps 3D Iframe</label>
+        <label className="block mb-2 font-medium text-gray-900 text-sm sm:text-base">Google 3D Iframe View</label>
         <textarea
           placeholder='Paste full iframe code or embed URL (optional)'
           value={map3dIframe}

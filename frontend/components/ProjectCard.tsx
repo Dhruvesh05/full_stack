@@ -55,31 +55,6 @@ const getProjectImageSrc = (project: Project): string => {
 
 const isRemoteImage = (src: string) => src.startsWith("http://") || src.startsWith("https://");
 
-const extractIframeSrc = (value?: string): string => {
-  if (!value) return "";
-
-  const trimmed = value
-    .trim()
-    .replaceAll("&quot;", '"')
-    .replaceAll("&#34;", '"')
-    .replaceAll("&apos;", "'")
-    .replaceAll("&#39;", "'");
-
-  if (!trimmed) return "";
-
-  const srcMatch = trimmed.match(/src=["']([^"']+)["']/i);
-  if (srcMatch?.[1]) {
-    return srcMatch[1];
-  }
-
-  const googleEmbedMatch = trimmed.match(/https?:\/\/[^\s"'<>]*google\.com\/maps\/embed[^\s"'<>]*/i);
-  if (googleEmbedMatch?.[0]) {
-    return googleEmbedMatch[0];
-  }
-
-  return /^https?:\/\//i.test(trimmed) ? trimmed : "";
-};
-
 const ProjectCard = () => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
@@ -353,7 +328,6 @@ const ProjectCard = () => {
         {projects.map((item, index) => {
           const imageSrc = getProjectImageSrc(item);
           const isRemote = isRemoteImage(imageSrc);
-          const map3dEmbedSrc = extractIframeSrc(item.map3dIframe);
 
           return (
           <AnimateOnScroll direction="up" delay={(index % 3) * 0.2} key={item.uniqueKey}>
@@ -361,32 +335,17 @@ const ProjectCard = () => {
               className="relative shadow-xl bg-white border-[1] border-gray-400 hover:shadow-2xl transition-all duration-300 rounded-xl overflow-hidden cursor-pointer flex flex-col h-full"
               onClick={() => handleProjectClick(item)}
             >
-              {/* Top Section: 3D Map or Image */}
-              {map3dEmbedSrc ? (
-                <div className="w-full h-80 overflow-hidden bg-gray-100" onClick={(e) => e.stopPropagation()}>
-                  <iframe
-                    src={map3dEmbedSrc}
-                    width="100%"
-                    height="320"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title={`${item.name} Interactive 3D Map`}
-                  />
-                </div>
-              ) : (
-                <div className="w-full h-64 overflow-hidden">
-                  <Image
-                    src={imageSrc}
-                    alt={`${item.name} - ${item.type} construction project by Shubh Construction`}
-                    width={600}
-                    height={250}
-                    className="object-cover w-full h-full cursor-pointer hover:opacity-90 transition-opacity"
-                    unoptimized={isRemote}
-                  />
-                </div>
-              )}
+              {/* Top Section: Always show uploaded/linked image */}
+              <div className="w-full h-64 overflow-hidden">
+                <Image
+                  src={imageSrc}
+                  alt={`${item.name} - ${item.type} construction project by Shubh Construction`}
+                  width={600}
+                  height={250}
+                  className="object-cover w-full h-full cursor-pointer hover:opacity-90 transition-opacity"
+                  unoptimized={isRemote}
+                />
+              </div>
 
               {/* Bottom Section: Project Info */}
               <div className="p-4 space-y-3 grow flex flex-col justify-between">
@@ -411,18 +370,16 @@ const ProjectCard = () => {
                     )}
                   </div>
                 </div>
-                {!map3dEmbedSrc && (
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleProjectClick(item);
-                    }}
-                    className="w-full bg-red-600 text-white text-xs py-2 rounded hover:bg-red-700 transition-colors font-medium"
-                  >
-                    View Details
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleProjectClick(item);
+                  }}
+                  className="w-full bg-red-600 text-white text-xs py-2 rounded hover:bg-red-700 transition-colors font-medium"
+                >
+                  View Details
+                </button>
               </div>
 
               {/* Badge */}

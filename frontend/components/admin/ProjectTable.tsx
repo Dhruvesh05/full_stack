@@ -126,7 +126,7 @@ export default function ProjectTable(){
               <th className="p-3 text-left text-gray-900">Type</th>
               <th className="p-3 text-left text-gray-900">Location</th>
               <th className="p-3 text-left text-gray-900">Location Link</th>
-              <th className="p-3 text-left text-gray-900">Interactive 3D Map</th>
+              <th className="p-3 text-left text-gray-900">Interactive 3D View</th>
               <th className="p-3 text-left text-gray-900">Actions</th>
             </tr>
           </thead>
@@ -254,7 +254,7 @@ export default function ProjectTable(){
               )}
 
               <div>
-                <span className="text-xs text-gray-500 uppercase">Interactive 3D Map</span>
+                <span className="text-xs text-gray-500 uppercase">Interactive 3D View</span>
                 {extractIframeSrc(p.map3dIframe) ? (
                   <iframe
                     src={extractIframeSrc(p.map3dIframe)}

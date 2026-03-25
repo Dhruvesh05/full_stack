@@ -69,6 +69,12 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
   const isRemoteProjectImage = isRemoteImage(imageSrc);
   const map3dEmbedSrc = extractIframeSrc(project?.map3dIframe);
 
+  useEffect(() => {
+    if (isOpen) {
+      setShowMap(false);
+    }
+  }, [isOpen, project?.id]);
+
   const fetchUpdates = async () => {
     if (!project?.id || project.id <= 0) return;
     
@@ -188,7 +194,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
                       onClick={() => setShowMap(true)}
                       className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors"
                     >
-                      View 3D Map
+                      3D View
                     </button>
                   </div>
                 </div>

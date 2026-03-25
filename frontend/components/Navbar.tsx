@@ -12,6 +12,7 @@ export default function Navbar() {
   const pathname = usePathname()
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 })
   const navRef = useRef<HTMLDivElement>(null)
+  const isAdminRoute = pathname?.startsWith("/admin")
 
   const navLinks = [
     { href: "/", label: "Home" },
@@ -44,6 +45,10 @@ export default function Navbar() {
         behavior: "smooth",
       })
     }
+  }
+
+  if (isAdminRoute) {
+    return null
   }
 
   return (
