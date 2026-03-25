@@ -37,8 +37,8 @@ const corsOptions = {
 
 // Middleware
 app.use(cors(corsOptions));
-// Preflight for all routes
-app.options('*', cors(corsOptions));
+// Preflight for all routes (Express 5: use regex instead of "*")
+app.options(/.*/, cors(corsOptions));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
