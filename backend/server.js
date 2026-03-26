@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import projectRoutes from './routes/projectRoutes.js';
+import jobApplicationRoutes from './routes/jobApplicationRoutes.js';
 import pool from "./config/db.js";
 
 dotenv.config();
@@ -72,6 +73,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/api/projects', projectRoutes);
+app.use('/api/job-application', jobApplicationRoutes);
 
 // Root route
 app.get('/', (req, res) => {
@@ -109,4 +111,5 @@ app.listen(PORT, () => {
   console.log(`   - POST /api/projects        → Create project`);
   console.log(`   - PUT  /api/projects/:id    → Update project`);
   console.log(`   - DELETE /api/projects/:id  → Delete project`);
+  console.log(`   - POST /api/job-application → Submit job application with resume`);
 });
