@@ -124,7 +124,8 @@ const Page = () => {
           errorMessage = error.message || errorMessage;
         }
       }
-      setError(errorMessage); finally {
+      setError(errorMessage);
+    } finally {
       setLoading(false);
     }
   };
