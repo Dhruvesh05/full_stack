@@ -112,7 +112,7 @@ export default function BookingForm({ onBack }: BookingFormProps) {
 
           // 1. SEND ADMIN EMAIL (to business owner)
           await emailjs.send(
-            process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "",
+            process.env.NEXT_PUBLIC_EMAILJS_BOOKING_SERVICE_ID || "",
             process.env.NEXT_PUBLIC_EMAILJS_ADMIN_TEMPLATE_ID || "",
             {
               ...templateParams,
@@ -124,7 +124,7 @@ export default function BookingForm({ onBack }: BookingFormProps) {
 
           // 2. SEND USER CONFIRMATION EMAIL (to customer)
           await emailjs.send(
-            process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "",
+            process.env.NEXT_PUBLIC_EMAILJS_BOOKING_SERVICE_ID || "",
             process.env.NEXT_PUBLIC_EMAILJS_USER_TEMPLATE_ID || "",
             {
               ...templateParams,
