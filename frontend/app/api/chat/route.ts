@@ -151,8 +151,14 @@ export async function POST(request: NextRequest) {
     }
 
     // ✅ DEVELOPMENT MODE - USE MOCK RESPONSES (avoid wasting API calls)
-    if (process.env.NODE_ENV === "development") {
-      console.log("📝 [DEV MODE] Returning mock response instead of calling OpenAI")
+    const enableMockResponses =
+      process.env.NODE_ENV === "development" ||
+      process.env.ENABLE_AI_MOCK_RESPONSES === "true"
+
+    if (enableMockResponses) {
+      console.log(
+        "📝 [MOCK MODE] Returning mock response instead of calling OpenAI"
+      )
 
       // Add realistic delay to simulate API call
       await new Promise((resolve) => setTimeout(resolve, 800))
