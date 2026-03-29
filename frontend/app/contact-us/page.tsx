@@ -42,6 +42,17 @@ const Page = () => {
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Initialize EmailJS once
+  React.useEffect(() => {
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+    if (publicKey) {
+      emailjs.init(publicKey);
+      console.log("✅ EmailJS initialized");
+    } else {
+      console.error("❌ EmailJS public key not found");
+    }
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -49,18 +60,71 @@ const Page = () => {
     setError(null);
     const form = formRef.current;
     if (!form) return;
+
     try {
-      await emailjs.sendForm(
-        process.env.NEXT_PUBLIC_EMAILJS_CONTACT_SERVICE_ID!,
-        process.env.NEXT_PUBLIC_EMAILJS_CONTACT_TEMPLATE_ID!,
-        form,
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
-      );
-      setSuccess("Message sent successfully!");
+      // Validate environment variables
+      const serviceId = process.env.NEXT_PUBLIC_EMAILJS_CONTACT_SERVICE_ID;
+      const templateId = process.env.NEXT_PUBLIC_EMAILJS_CONTACT_TEMPLATE_ID;
+      const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+
+      if (!serviceId || !templateId || !publicKey) {
+        console.error("❌ Missing EmailJS configuration:", {
+          serviceId: !!serviceId,
+          templateId: !!templateId,
+          publicKey: !!publicKey,
+        });
+        setError("Email service not configured. Please contact support.");
+        return;
+      }
+
+      // Extract form data
+      const formData = new FormData(form);
+      const data = {
+        name: formData.get("name") as string,
+        email: formData.get("email") as string,
+        phone: formData.get("phone") as string,
+        message: formData.get("message") as string,
+        to_email: process.env.NEXT_PUBLIC_ADMIN_EMAIL || "shubhconstruction@gmail.com",
+        from_name: (formData.get("name") as string) || "Contact Form User",
+        reply_to: formData.get("email") as string,
+      };
+
+      console.log("📧 Sending contact email with data:", { ...data, to_email: "***" });
+
+      // Use send() instead of sendForm() for better control
+      await emailjs.send(serviceId, templateId, data, publicKey);
+
+      console.log("✅ Contact email sent successfully");
+      setSuccess("Message sent successfully! We'll get back to you soon.");
       form.reset();
-    } catch {
-      setError("Failed to send message. Please try again later.");
-    } finally {
+    } catch (error) {
+      console.error("❌ Email send failed:", error);
+      let errorMessage = "Failed to send message. Please try again later.";
+
+      if (error instanceof Error) {
+        console.error("Error details:", {
+          message: error.message,
+          stack: error.stack,
+        });
+
+        if (
+          error.message.includes("400") ||
+          error.message.includes("Invalid")
+        ) {
+          errorMessage = "Configuration error. Please check with support.";
+        } else if (error.message.includes("401")) {
+          errorMessage = "Authentication failed. Please try again later.";
+        } else if (error.message.includes("429")) {
+          errorMessage =
+            "Too many requests. Please wait a moment and try again.";
+        } else if (error.message.includes("network")) {
+          errorMessage =
+            "Network error. Please check your connection and try again.";
+        } else {
+          errorMessage = error.message || errorMessage;
+        }
+      }
+      setError(errorMessage); finally {
       setLoading(false);
     }
   };

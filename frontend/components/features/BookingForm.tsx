@@ -100,6 +100,26 @@ export default function BookingForm({ onBack }: BookingFormProps) {
         setSubmitError("")
 
         try {
+          // Validate environment variables
+          const serviceId = process.env.NEXT_PUBLIC_EMAILJS_BOOKING_SERVICE_ID;
+          const adminTemplateId = process.env.NEXT_PUBLIC_EMAILJS_ADMIN_TEMPLATE_ID;
+          const userTemplateId = process.env.NEXT_PUBLIC_EMAILJS_USER_TEMPLATE_ID;
+          const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+
+          if (!serviceId || !adminTemplateId || !userTemplateId || !publicKey) {
+            console.error("❌ Missing EmailJS configuration:", {
+              serviceId: !!serviceId,
+              adminTemplateId: !!adminTemplateId,
+              userTemplateId: !!userTemplateId,
+              publicKey: !!publicKey,
+            });
+            setSubmitError(
+              "Email service not configured. Please contact support."
+            );
+            setIsLoading(false);
+            return;
+          }
+
           // Template parameters - EXACT MATCH with EmailJS template variables
           const templateParams = {
             name: formData.name,
@@ -108,33 +128,34 @@ export default function BookingForm({ onBack }: BookingFormProps) {
             date: formData.date,
             time: formData.time,
             message: formData.message || "No message provided",
-          }
+          };
+
+          console.log("📧 Sending booking emails with service:", serviceId);
 
           // 1. SEND ADMIN EMAIL (to business owner)
-          await emailjs.send(
-            process.env.NEXT_PUBLIC_EMAILJS_BOOKING_SERVICE_ID || "",
-            process.env.NEXT_PUBLIC_EMAILJS_ADMIN_TEMPLATE_ID || "",
-            {
-              ...templateParams,
-              to_email: ADMIN_EMAIL, // Send to admin
-              from_name: formData.name,
-              reply_to: formData.email,
-            }
-          )
+          await emailjs.send(serviceId, adminTemplateId, {
+            ...templateParams,
+            to_email: ADMIN_EMAIL, // Send to admin
+            from_name: formData.name,
+            reply_to: formData.email,
+          });
+
+          console.log("✅ Admin email sent successfully");
 
           // 2. SEND USER CONFIRMATION EMAIL (to customer)
-          await emailjs.send(
-            process.env.NEXT_PUBLIC_EMAILJS_BOOKING_SERVICE_ID || "",
-            process.env.NEXT_PUBLIC_EMAILJS_USER_TEMPLATE_ID || "",
-            {
-              ...templateParams,
-              to_email: formData.email, // Send to user
-              from_name: "Shubh Construction",
-            }
-          )
+          await emailjs.send(serviceId, userTemplateId, {
+            ...templateParams,
+            to_email: formData.email, // Send to user
+            from_name: "Shubh Construction",
+          });
 
           // Success - show confirmation
-          console.log("✅ Booking submitted successfully:", formData)
+          console.log("✅ User confirmation email sent successfully");
+          console.log("✅ Booking submitted successfully:", {
+            name: formData.name,
+            email: formData.email,
+            date: formData.date,
+          });
           setIsSubmitted(true)
 
           // Reset form after 3 seconds
@@ -152,13 +173,36 @@ export default function BookingForm({ onBack }: BookingFormProps) {
             setIsLoading(false)
           }, 3000)
         } catch (error) {
-          console.error("❌ Email send failed:", error)
-          const errorMessage =
-            error instanceof Error
-              ? error.message
-              : "Failed to send booking. Please try again."
-          setSubmitError(errorMessage)
-          setIsLoading(false)
+          console.error("❌ Email send failed:", error);
+          let errorMessage = "Failed to send booking. Please try again.";
+
+          if (error instanceof Error) {
+            console.error("Error details:", {
+              message: error.message,
+              stack: error.stack,
+            });
+
+            if (
+              error.message.includes("400") ||
+              error.message.includes("Invalid")
+            ) {
+              errorMessage =
+                "Configuration error. Please contact support.";
+            } else if (error.message.includes("401")) {
+              errorMessage = "Authentication failed. Please try again later.";
+            } else if (error.message.includes("429")) {
+              errorMessage =
+                "Too many requests. Please wait a moment and try again.";
+            } else if (error.message.includes("network")) {
+              errorMessage =
+                "Network error. Please check your connection and try again.";
+            } else {
+              errorMessage = error.message;
+            }
+          }
+
+          setSubmitError(errorMessage);
+          setIsLoading(false);
         }
       } else {
         setErrors(allErrors)
