@@ -4,15 +4,26 @@ import type React from "react"
 
 import Link from "next/link"
 import { useState, useEffect, useRef } from "react"
-import { Menu, X } from "lucide-react"
+import { Menu, X, Plus } from "lucide-react"
 import { usePathname } from "next/navigation"
+import Sidebar from "./Sidebar"
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [showToolsTooltip, setShowToolsTooltip] = useState(false)
+  const [isButtonAnimating, setIsButtonAnimating] = useState(false)
   const pathname = usePathname()
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 })
   const navRef = useRef<HTMLDivElement>(null)
   const isAdminRoute = pathname?.startsWith("/admin")
+
+  const handleToolsButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    setIsButtonAnimating(true)
+    setIsSidebarOpen(true)
+    setTimeout(() => setIsButtonAnimating(false), 300)
+  }
 
   const navLinks = [
     { href: "/", label: "Home" },
@@ -104,16 +115,50 @@ export default function Navbar() {
               >
                 Get Quote
               </Link>
+              {/* Tools Button with Tooltip */}
+              <div className="relative ml-4 flex items-center">
+                <button
+                  onClick={handleToolsButtonClick}
+                  onMouseEnter={() => setShowToolsTooltip(true)}
+                  onMouseLeave={() => setShowToolsTooltip(false)}
+                  className={`p-3 rounded-full bg-white/10 hover:bg-red-600 text-black hover:text-white border-2 border-black/20 hover:border-red-700 transition-all duration-300 ${
+                    isButtonAnimating ? "scale-110 rotate-180" : "hover:scale-110"
+                  }`}
+                  aria-label="Explore construction tools"
+                  title="Explore Tools"
+                >
+                  <Plus size={24} strokeWidth={2.5} />
+                </button>
+                
+                {/* Tooltip */}
+                {showToolsTooltip && (
+                  <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-sm px-3 py-2 rounded-lg whitespace-nowrap shadow-lg z-40 pointer-events-none">
+                    Explore Tools
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-b-gray-900" />
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Mobile Menu Button */}
-            <button
-              className="md:hidden text-black p-2"
-              onClick={() => setIsOpen(!isOpen)}
-              aria-label="Toggle menu"
-            >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+            <div className="md:hidden flex items-center gap-2">
+              <button
+                onClick={handleToolsButtonClick}
+                className={`text-black p-3 rounded-full bg-white/10 border-2 border-black/20 hover:bg-red-600 hover:text-white hover:border-red-700 transition-all duration-300 ${
+                  isButtonAnimating ? "scale-110 rotate-180" : "hover:scale-110"
+                }`}
+                aria-label="Explore construction tools"
+              >
+                <Plus size={24} strokeWidth={2.5} />
+              </button>
+              <button
+                className="text-black p-2"
+                onClick={() => setIsOpen(!isOpen)}
+                aria-label="Toggle menu"
+              >
+                {isOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
           </div>
 
           {/* Mobile Navigation */}
@@ -148,6 +193,8 @@ export default function Navbar() {
           )}
         </div>
       </nav>
+      {/* Features Sidebar */}
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
     </header>
   );
 }
