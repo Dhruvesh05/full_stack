@@ -211,7 +211,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           </div>
           <button
             onClick={onClose}
-            className="tools-close-btn flex h-10 w-10 items-center justify-center rounded-none border border-white/25 bg-white/10 text-white transition-all duration-300 hover:bg-white/20 hover:scale-105 active:scale-95"
+            className="tools-close-btn flex h-10 w-10 items-center justify-center rounded-none border border-white/25 bg-white/10 text-white transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-white/20 hover:scale-[1.01] active:scale-[0.998]"
             aria-label="Close sidebar"
             title="Close (ESC)"
           >
@@ -244,14 +244,14 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                           onClick={() =>
                             handleFeatureClick(feature.id as FeatureType)
                           }
-                          className={`w-full p-3 rounded-xl border-2 transition-all duration-200 text-left group ${
+                          className={`w-full p-3 rounded-xl border-2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] text-left group ${
                             activeFeature === feature.id
                               ? "bg-linear-to-r from-red-50 to-red-100 border-red-600 shadow-md"
                               : "bg-white border-gray-200 hover:border-red-400 hover:bg-red-50 hover:shadow-sm"
                           }`}
                         >
                           <div className="flex items-start gap-3">
-                            <div className={`transition-all duration-200 flex items-center justify-center ${
+                            <div className={`transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] flex items-center justify-center ${
                               activeFeature === feature.id
                                 ? "text-red-600 scale-110"
                                 : "text-gray-700 group-hover:text-red-600"
@@ -259,7 +259,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                               {feature.icon}
                             </div>
                             <div className="flex-1">
-                              <p className={`font-semibold transition-colors duration-200 ${
+                              <p className={`font-semibold transition-colors duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
                                 activeFeature === feature.id
                                   ? "text-red-700"
                                   : "text-gray-900 group-hover:text-red-700"
