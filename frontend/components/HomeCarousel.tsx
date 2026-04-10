@@ -40,10 +40,6 @@ const SLIDES = [
 
 export default function HeroCarousel() {
   const [current, setCurrent] = useState(0);
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   /* Auto Slide */
   useEffect(() => {
@@ -63,10 +59,10 @@ export default function HeroCarousel() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{
-        duration: 0.8,
-        ease: "linear",
+        duration: 1,
+        ease: [0.16, 1, 0.3, 1],
       }}
-      className="bg-[url('/projects_photo/BG.webp')] bg-center bg-cover bg-no-repeat relative h-[600px] overflow-hidden w-full"
+      className="bg-[url('/projects_photo/BG.webp')] bg-center bg-cover bg-no-repeat relative h-150 overflow-hidden w-full"
       role="banner"
     >
       {/* Slides */}
@@ -80,7 +76,7 @@ export default function HeroCarousel() {
             className={`
         absolute inset-0
         flex items-center justify-center
-        transition-opacity duration-[900ms] ease-in-out
+      transition-opacity duration-1100 ease-[cubic-bezier(0.16,1,0.3,1)]
         ${isActive ? "opacity-100 z-20" : "opacity-0 z-10"}
       `}
           >
@@ -103,12 +99,12 @@ export default function HeroCarousel() {
               {/* IMAGE */}
               <div
                 className={`
-            transition-transform duration-[1200ms] ease-out
-            ${isActive ? "translate-x-0 scale-100" : "translate-x-8 scale-95"}
-            flex-shrink-0
+            transition-transform duration-1200 ease-out
+            ${isActive ? "translate-x-0 scale-100" : "translate-x-6 scale-95"}
+            shrink-0
           `}
               >
-                <div className="w-[220px] sm:w-[280px] md:w-[490px] lg:w-[510px]">
+                <div className="w-55 sm:w-70 md:w-122.5 lg:w-127.5">
                   <Image
                     src={`/projects_photo/${slide.image}`}
                     alt={slide.alt}
@@ -125,9 +121,9 @@ export default function HeroCarousel() {
                 className={`
             max-w-2xl
             text-left
-            transition-transform duration-[900ms] ease-out
+            transition-transform duration-1100 ease-[cubic-bezier(0.16,1,0.3,1)]
             ${
-              isActive ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0"
+              isActive ? "translate-x-0 opacity-100" : "translate-x-3 opacity-0"
             }
           `}
               >
@@ -162,9 +158,9 @@ export default function HeroCarousel() {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{
-          duration: 0.5,
+          duration: 0.7,
           delay: 0.6,
-          ease: "linear",
+          ease: [0.16, 1, 0.3, 1],
         }}
         aria-label="Previous slide"
         className="absolute  left-2 sm:left-6 top-1/2  -translate-y-1/2 z-30 w-12 h-12 active:scale-90 transition-all duration-300 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur flex items-center justify-center text-white text-2xl"
@@ -178,9 +174,9 @@ export default function HeroCarousel() {
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{
-          duration: 0.5,
+          duration: 0.7,
           delay: 0.6,
-          ease: "linear",
+          ease: [0.16, 1, 0.3, 1],
         }}
         aria-label="Next slide"
         className="absolute right-2 sm:right-6 top-1/2 active:scale-90 transition-all duration-300 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur flex items-center justify-center text-white text-2xl"
@@ -194,9 +190,9 @@ export default function HeroCarousel() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{
-          duration: 0.5,
+          duration: 0.7,
           delay: 0.8,
-          ease: "easeOut",
+          ease: [0.16, 1, 0.3, 1],
         }}
       >
         {SLIDES.map((_, index) => (

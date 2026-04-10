@@ -23,24 +23,25 @@ export function Button({
 }: ButtonProps) {
   const variantClasses = {
     primary:
-      "bg-red-600 hover:bg-red-700 active:bg-red-800 text-white shadow-md",
+      "group relative inline-flex items-center gap-2 bg-white text-red-600 border border-red-600 hover:bg-red-600 hover:text-white",
     secondary:
       "bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-900 border-2 border-gray-300",
     outline:
       "border-2 border-red-600 text-red-600 hover:bg-red-50 active:bg-red-100",
-    danger: "bg-red-600 hover:bg-red-700 text-white shadow-md",
+    danger:
+      "group relative inline-flex items-center gap-2 bg-white text-red-600 border border-red-600 hover:bg-red-600 hover:text-white",
   }
 
   const sizeClasses = {
-    sm: "px-3 py-2 text-sm rounded-lg",
-    md: "px-4 py-3 text-base rounded-lg",
-    lg: "px-6 py-4 text-lg rounded-xl",
+    sm: "px-4 py-2 text-sm rounded-none",
+    md: "px-5 py-3 text-base rounded-none",
+    lg: "px-7 py-3 text-lg rounded-none",
   }
 
   return (
     <button
       disabled={disabled || isLoading}
-      className={`font-semibold transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+      className={`font-medium transition-all duration-300 ease-out flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${
         variantClasses[variant]
       } ${sizeClasses[size]} ${fullWidth ? "w-full" : ""} ${className}`}
       {...props}

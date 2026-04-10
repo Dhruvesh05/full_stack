@@ -35,6 +35,43 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const [activeFeature, setActiveFeature] = useState<FeatureType>(null)
   const sidebarRef = useRef<HTMLDivElement>(null)
 
+  useEffect(() => {
+    if (!isOpen) {
+      document.body.style.overflow = ""
+      document.body.style.paddingRight = ""
+      document.documentElement.style.overflow = ""
+      document.documentElement.style.touchAction = ""
+      document.body.classList.remove("tools-sidebar-open")
+      window.dispatchEvent(
+        new CustomEvent("tools-sidebar-toggle", { detail: { open: false } })
+      )
+      return
+    }
+
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+    document.body.style.overflow = "hidden"
+    document.documentElement.style.overflow = "hidden"
+    document.documentElement.style.touchAction = "none"
+    document.body.classList.add("tools-sidebar-open")
+    window.dispatchEvent(
+      new CustomEvent("tools-sidebar-toggle", { detail: { open: true } })
+    )
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`
+    }
+
+    return () => {
+      document.body.style.overflow = ""
+      document.body.style.paddingRight = ""
+      document.documentElement.style.overflow = ""
+      document.documentElement.style.touchAction = ""
+      document.body.classList.remove("tools-sidebar-open")
+      window.dispatchEvent(
+        new CustomEvent("tools-sidebar-toggle", { detail: { open: false } })
+      )
+    }
+  }, [isOpen])
+
   // Handle ESC key to close sidebar
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -155,7 +192,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Sidebar */}
       <aside
         ref={sidebarRef}
-        className={`fixed top-0 right-0 h-screen w-full sm:w-96 bg-white shadow-2xl z-50 transition-all duration-300 ease-out transform flex flex-col ${
+        data-lenis-prevent
+        className={`tools-panel fixed top-0 right-0 h-screen w-full sm:w-96 bg-white shadow-2xl z-50 transition-all duration-300 ease-out transform flex flex-col ${
           isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0 pointer-events-none"
         }`}
       >
@@ -173,11 +211,11 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-white/20 rounded-full transition-colors"
+            className="tools-close-btn flex h-10 w-10 items-center justify-center rounded-none border border-white/25 bg-white/10 text-white transition-all duration-300 hover:bg-white/20 hover:scale-105 active:scale-95"
             aria-label="Close sidebar"
             title="Close (ESC)"
           >
-            <X size={24} className="text-white" />
+            <X size={20} className="text-white" strokeWidth={2.5} />
           </button>
         </div>
 

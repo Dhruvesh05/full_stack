@@ -3,10 +3,12 @@
 import type React from "react"
 
 import Link from "next/link"
+import Image from "next/image"
 import { useState, useEffect, useRef } from "react"
 import { Menu, X, Plus } from "lucide-react"
 import { usePathname } from "next/navigation"
 import Sidebar from "./Sidebar"
+import gsap from "gsap"
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -15,6 +17,7 @@ export default function Navbar() {
   const [isButtonAnimating, setIsButtonAnimating] = useState(false)
   const pathname = usePathname()
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 })
+  const navShellRef = useRef<HTMLElement>(null)
   const navRef = useRef<HTMLDivElement>(null)
   const isAdminRoute = pathname?.startsWith("/admin")
 
@@ -48,6 +51,36 @@ export default function Navbar() {
     }
   }, [pathname])
 
+  useEffect(() => {
+    const navEl = navShellRef.current
+    if (!navEl) {
+      return
+    }
+
+    let lastScrollY = window.scrollY
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      const isScrollingDown = currentScrollY > lastScrollY
+      const shouldHide = isScrollingDown && currentScrollY > 90 && !isOpen
+
+      gsap.to(navEl, {
+        y: shouldHide ? "-100%" : 0,
+        duration: 0.35,
+        ease: "power2.out",
+        overwrite: true,
+      })
+
+      lastScrollY = currentScrollY
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true })
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+    }
+  }, [isOpen])
+
   const handleGetQuoteClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (pathname === "/contact-us") {
       e.preventDefault()
@@ -65,22 +98,26 @@ export default function Navbar() {
   return (
     <header>
       <nav
+        ref={navShellRef}
         aria-label="Main navigation"
         className="bg-[url('/bgc.jpg')] bg-cover bg-top bg-no-repeat text-primary-foreground fixed top-0 left-0 text-white right-0 z-50 shadow-md border-b border-black/20"
       >
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-28">
+          <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link
               href="/"
               className="flex whitespace-nowrap shrink-none items-center"
             >
-              <div className="h-24 lg:ml-6">
-                <img
+              <div className="h-16 lg:ml-6">
+                <Image
                   src="/shubh-construction-logo.png"
                   alt="Shubh Construction – Civil & Industrial Construction Company in Gujarat"
+                  width={220}
+                  height={80}
                   className="h-full w-auto"
-                ></img>
+                  priority
+                />
               </div>
             </Link>
 
@@ -111,7 +148,7 @@ export default function Navbar() {
                 href="/contact-us"
                 rel="nofollow"
                 onClick={handleGetQuoteClick}
-                className="inline-block bg-red-600 hover:bg-red-700 shadow-black font-sans whitespace-nowrap text-white px-4 py-2 rounded-md font-medium hover:scale-110 active:scale-95 transition-all duration-300"
+                className="inline-block bg-red-600 hover:bg-red-700 shadow-black font-sans whitespace-nowrap text-white px-4 py-2 rounded-none font-medium hover:scale-110 active:scale-95 transition-all duration-300"
               >
                 Get Quote
               </Link>
@@ -121,13 +158,13 @@ export default function Navbar() {
                   onClick={handleToolsButtonClick}
                   onMouseEnter={() => setShowToolsTooltip(true)}
                   onMouseLeave={() => setShowToolsTooltip(false)}
-                  className={`p-3 rounded-full bg-white/10 hover:bg-red-600 text-black hover:text-white border-2 border-black/20 hover:border-red-700 transition-all duration-300 ${
+                  className={`p-2 bg-white/10 hover:bg-red-600 text-black hover:text-white border-2 border-black/20 hover:border-red-700 transition-all duration-300 ${
                     isButtonAnimating ? "scale-110 rotate-180" : "hover:scale-110"
                   }`}
                   aria-label="Explore construction tools"
                   title="Explore Tools"
                 >
-                  <Plus size={24} strokeWidth={2.5} />
+                  <Plus size={20} strokeWidth={2.5} />
                 </button>
                 
                 {/* Tooltip */}
@@ -144,12 +181,12 @@ export default function Navbar() {
             <div className="md:hidden flex items-center gap-2">
               <button
                 onClick={handleToolsButtonClick}
-                className={`text-black p-3 rounded-full bg-white/10 border-2 border-black/20 hover:bg-red-600 hover:text-white hover:border-red-700 transition-all duration-300 ${
+                className={`text-black p-2 bg-white/10 border-2 border-black/20 hover:bg-red-600 hover:text-white hover:border-red-700 transition-all duration-300 ${
                   isButtonAnimating ? "scale-110 rotate-180" : "hover:scale-110"
                 }`}
                 aria-label="Explore construction tools"
               >
-                <Plus size={24} strokeWidth={2.5} />
+                <Plus size={20} strokeWidth={2.5} />
               </button>
               <button
                 className="text-black p-2"
@@ -184,7 +221,7 @@ export default function Navbar() {
                     setIsOpen(false);
                   }}
                   rel="nofollow"
-                  className="bg-red-600 hover:scale-105 hover:bg-red-700 w-full px-4 py-2 rounded-md font-medium text-center transition-all active:scale-95 duration-300"
+                  className="bg-red-600 hover:scale-105 hover:bg-red-700 w-full px-4 py-2 rounded-none font-medium text-center transition-all active:scale-95 duration-300"
                 >
                   Get Quote
                 </Link>

@@ -57,6 +57,7 @@ import {
 import Link from "next/link";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import ClientCarousel from "@/components/ClientCarousel";
+import AnimatedCounter from "@/components/AnimatedCounter";
 const ExpInfo = [
   {
     icon: Building,
@@ -184,7 +185,7 @@ const page = () => {
             >
               <item.icon className="text-red-700 h-16 w-16 p-4 bg-red-700/30 rounded-full" />
               <p className="text-white font-semibold text-4xl md:text-5xl">
-                {item.value}
+                <AnimatedCounter value={item.value} />
               </p>
               <p className="text-gray-400">{item.title}</p>
             </div>

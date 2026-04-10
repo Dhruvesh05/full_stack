@@ -1,5 +1,6 @@
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import ProjectCard from "@/components/ProjectCard";
+import AnimatedCounter from "@/components/AnimatedCounter";
 import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
@@ -98,7 +99,7 @@ const page = () => {
               className="container mx-auto px-4 py-10 text-center hover:scale-115 transition-all duration-400"
             >
               <h2 className="text-4xl font-extrabold text-red-700 mb-2">
-                {item.value}
+                <AnimatedCounter value={item.value} />
               </h2>
               <p className="text-gray-400 text-md">{item.title}</p>
             </div>

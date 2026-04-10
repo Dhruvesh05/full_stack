@@ -28,7 +28,7 @@ export function Card({
   return (
     <div
       onClick={onClick}
-      className={`rounded-2xl border-2 p-6 transition-all duration-200 ${
+      className={`rounded-none border-2 p-6 transition-all duration-200 ${
         variantClasses[variant]
       } ${hoverable ? "hover:shadow-lg cursor-pointer hover:border-red-300" : "shadow-md"} ${className}`}
     >
