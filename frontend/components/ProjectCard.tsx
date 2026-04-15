@@ -376,7 +376,7 @@ const ProjectCard = () => {
                     e.stopPropagation();
                     handleProjectClick(item);
                   }}
-                  className="w-full bg-red-600 text-white text-xs py-2 rounded hover:bg-red-700 transition-colors font-medium"
+                  className="w-full bg-white border-2 border-red-600 text-red-600 text-xs py-2 rounded hover:bg-red-600 hover:text-white transition-colors font-medium"
                 >
                   View Details
                 </button>

@@ -7,25 +7,27 @@ import type { Metadata } from "next";
 import { buildUrl } from "@/utils/config";
 
 export const metadata: Metadata = {
-  title: "About Shubh Construction | Trusted Civil Contractors Since 2017",
+  title: "About Shubh Construction | Civil Experts Since 2017",
   description:
-    "Learn about Shubh Construction, a trusted civil construction company established in 2017. We specialize in industrial water-retaining structures, ETP, STP, and turnkey civil projects with a strong focus on quality, safety, and reliability.",
+    "Learn about Shubh Construction, a trusted civil and industrial construction company established in 2017. We specialize in turning vision into reality with quality, integrity, and innovation. Based in Bharuch, Gujarat serving across India.",
   keywords: [
     "Shubh Construction",
+    "about us",
     "civil construction company",
-    "industrial construction",
-    "ETP STP construction",
-    "water retaining structures",
-    "construction company in India",
-    "civil contractors",
+    "industrial construction experts",
+    "construction contractors",
+    "company history",
+    "mission vision values",
+    "trusted builders",
+    "Bharuch construction",
   ],
   alternates: {
     canonical: buildUrl("/about-us"),
   },
   openGraph: {
-    title: "About Shubh Construction | Civil Construction Experts",
+    title: "About Shubh Construction | Industry Leaders",
     description:
-      "Discover Shubh Construction’s mission, vision, and core values. Delivering quality civil and industrial construction projects since 2017.",
+      "Discover Shubh Construction's mission, vision, and core values. Building excellence in civil and industrial construction since 2017.",
     url: buildUrl("/about-us"),
     siteName: "Shubh Construction",
     images: [
@@ -33,16 +35,16 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Shubh Construction – Civil Construction Company",
+        alt: "About Shubh Construction – Civil Construction Experts",
       },
     ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "About Shubh Construction",
+    title: "About Shubh Construction | Civil Experts",
     description:
-      "Trusted civil construction company delivering industrial and infrastructure projects since 2017.",
+      "Trusted partner for civil and industrial construction projects since 2017. Quality, integrity, and excellence.",
     images: ["/og-image.png"],
   },
 };

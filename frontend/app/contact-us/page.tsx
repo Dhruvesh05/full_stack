@@ -217,7 +217,7 @@ const Page = () => {
             {error && <div className="text-red-600 font-semibold">{error}</div>}
             <button
               type="submit"
-              className="text-white bg-red-600 active:scale-95 hover:bg-red-700 hover:scale-105 transition-all duration-300 px-4 py-2 rounded-xl disabled:opacity-60"
+              className="text-white bg-red-600 hover:bg-red-700 transition-all duration-300 px-4 py-2 rounded-lg disabled:opacity-60 border-2 border-red-600"
               disabled={loading}
             >
               {loading ? "Sending..." : "Send Message"}

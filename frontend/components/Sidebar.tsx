@@ -251,15 +251,15 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                           }`}
                         >
                           <div className="flex items-start gap-3">
-                            <div className={`transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] flex items-center justify-center ${
+                            <div className={`transition-all duration-300 flex items-center justify-center ${
                               activeFeature === feature.id
-                                ? "text-red-600 scale-110"
+                                ? "text-red-600 scale-100"
                                 : "text-gray-700 group-hover:text-red-600"
                             }`}>
                               {feature.icon}
                             </div>
                             <div className="flex-1">
-                              <p className={`font-semibold transition-colors duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                              <p className={`font-semibold transition-colors duration-300 ${
                                 activeFeature === feature.id
                                   ? "text-red-700"
                                   : "text-gray-900 group-hover:text-red-700"

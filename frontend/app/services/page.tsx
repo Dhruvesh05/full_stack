@@ -9,25 +9,28 @@ import type { Metadata } from "next";
 import { SITE_URL, buildUrl } from "@/utils/config";
 
 export const metadata: Metadata = {
-  title: "Our Services | Shubh Construction – Civil & Industrial Experts",
+  title: "Civil & Industrial Construction Services | Shubh Construction",
   description:
-    "Explore the wide range of civil, industrial, and mechanical construction services offered by Shubh Construction. From industrial civil works to project management, we deliver quality, safety, and reliability.",
+    "Discover comprehensive construction services by Shubh Construction including industrial civil works, commercial construction, mechanical works, project management, and renovation services with proven expertise.",
   keywords: [
     "civil construction services",
     "industrial civil works",
-    "industrial mechanical works",
+    "industrial mechanical services",
     "commercial construction",
-    "construction project management",
-    "renovation and remodeling services",
-    "Shubh Construction services",
+    "factory construction services",
+    "warehouse construction",
+    "project management services",
+    "renovation and remodeling",
+    "construction contractors",
+    "turnkey solutions",
   ],
   alternates: {
     canonical: buildUrl("/services"),
   },
   openGraph: {
-    title: "Our Services | Shubh Construction",
+    title: "Construction Services | Shubh Construction",
     description:
-      "Comprehensive civil and industrial construction services delivered by Shubh Construction with expertise and precision.",
+      "Expert civil, industrial, mechanical, and project management services delivered with precision and reliability.",
     url: buildUrl("/services"),
     siteName: "Shubh Construction",
     images: [
@@ -35,16 +38,17 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Shubh Construction Services",
+        alt: "Shubh Construction Services – Civil & Industrial Expertise",
       },
     ],
     type: "website",
+    locale: "en_IN",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Our Services | Shubh Construction",
+    title: "Construction Services | Shubh Construction",
     description:
-      "Discover civil, industrial, mechanical, and project management services by Shubh Construction.",
+      "Industrial civil, commercial, mechanical, and project management services.",
     images: ["/og-image.png"],
   },
 };
@@ -219,7 +223,7 @@ const page = () => {
             </p>
             <Link
               href="/contact-us"
-              className="inline-block mt-8 rounded-2xl bg-red-700 hover:bg-red-800 text-white font-bold py-4 px-8 transition-all duration-300 active:scale-95 hover:scale-115"
+              className="inline-block mt-8 rounded-lg border-2 border-red-600 bg-white text-red-600 hover:bg-red-600 hover:text-white font-bold py-4 px-8 transition-all duration-300"
             >
               Get a Quote
             </Link>

@@ -23,13 +23,13 @@ export function Button({
 }: ButtonProps) {
   const variantClasses = {
     primary:
-      "group relative inline-flex items-center gap-2 bg-white text-red-600 border border-red-600 hover:bg-red-600 hover:text-white",
+      "group relative inline-flex items-center gap-2 bg-white text-red-600 border-2 border-red-600 hover:bg-red-600 hover:text-white transition-all duration-300",
     secondary:
       "bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-900 border-2 border-gray-300",
     outline:
-      "border-2 border-red-600 text-red-600 hover:bg-red-50 active:bg-red-100",
+      "bg-white border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-300",
     danger:
-      "group relative inline-flex items-center gap-2 bg-white text-red-600 border border-red-600 hover:bg-red-600 hover:text-white",
+      "group relative inline-flex items-center gap-2 bg-white text-red-600 border-2 border-red-600 hover:bg-red-600 hover:text-white transition-all duration-300",
   }
 
   const sizeClasses = {

@@ -124,7 +124,7 @@ export default function CostEstimator({ onBack }: CostEstimatorProps) {
               <button
                 key={q}
                 onClick={() => setQuality(q)}
-                className={`p-3 rounded-2xl font-semibold text-center transition-all duration-200 ${
+                className={`p-3 rounded-lg font-semibold text-center transition-all duration-200 ${
                   quality === q
                     ? "bg-red-600 text-white shadow-md"
                     : "bg-white text-gray-800 border-2 border-gray-200 hover:border-red-600 hover:shadow-md"

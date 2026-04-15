@@ -138,7 +138,7 @@ export default function Navbar() {
                 </Link>
               ))}
               <span
-                className="absolute bottom-0 h-0.5 bg-red-700 transition-all duration-500 ease-in-out"
+                className="absolute bottom-0 h-0.5 bg-red-700 transition-all duration-300 ease-smooth"
                 style={{
                   left: `${indicatorStyle.left}px`,
                   width: `${indicatorStyle.width}px`,
@@ -148,7 +148,7 @@ export default function Navbar() {
                 href="/contact-us"
                 rel="nofollow"
                 onClick={handleGetQuoteClick}
-                className="inline-block bg-red-600 hover:bg-red-700 shadow-black font-sans whitespace-nowrap text-white px-4 py-2 rounded-none font-medium hover:scale-[1.006] active:scale-[0.998] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                className="inline-block bg-white border-2 border-red-600 text-red-600 font-sans whitespace-nowrap px-4 py-2 rounded-md font-medium hover:bg-red-600 hover:text-white transition-all duration-300 ease-smooth"
               >
                 Get Quote
               </Link>
@@ -158,7 +158,7 @@ export default function Navbar() {
                   onClick={handleToolsButtonClick}
                   onMouseEnter={() => setShowToolsTooltip(true)}
                   onMouseLeave={() => setShowToolsTooltip(false)}
-                  className={`p-2 bg-white/10 hover:bg-red-600 text-black hover:text-white border-2 border-black/20 hover:border-red-700 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                  className={`p-2 bg-white/10 hover:bg-red-600 text-black hover:text-white border-2 border-black/20 hover:border-red-700 transition-all duration-300 ease-smooth ${
                     isButtonAnimating ? "scale-105 rotate-180" : "hover:scale-[1.01]"
                   }`}
                   aria-label="Explore construction tools"
@@ -181,7 +181,7 @@ export default function Navbar() {
             <div className="md:hidden flex items-center gap-2">
               <button
                 onClick={handleToolsButtonClick}
-                className={`text-black p-2 bg-white/10 border-2 border-black/20 hover:bg-red-600 hover:text-white hover:border-red-700 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                className={`text-black p-2 bg-white/10 border-2 border-black/20 hover:bg-red-600 hover:text-white hover:border-red-700 transition-all duration-300 ease-smooth ${
                   isButtonAnimating ? "scale-105 rotate-180" : "hover:scale-[1.01]"
                 }`}
                 aria-label="Explore construction tools"
@@ -221,7 +221,7 @@ export default function Navbar() {
                     setIsOpen(false);
                   }}
                   rel="nofollow"
-                  className="bg-red-600 hover:scale-[1.006] hover:bg-red-700 w-full px-4 py-2 rounded-none font-medium text-center transition-all active:scale-[0.998] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                  className="bg-white border-2 border-red-600 text-red-600 w-full px-4 py-2 rounded-md font-medium text-center hover:bg-red-600 hover:text-white transition-all duration-300 ease-smooth"
                 >
                   Get Quote
                 </Link>

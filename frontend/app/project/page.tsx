@@ -7,24 +7,27 @@ import type { Metadata } from "next";
 import { buildUrl } from "@/utils/config";
 
 export const metadata: Metadata = {
-  title: "Our Projects | Shubh Construction – Civil & Industrial Works",
+  title: "Projects Portfolio | Shubh Construction – Quality Infrastructure Delivered",
   description:
-    "Explore completed civil and industrial construction projects by Shubh Construction. From water-retaining structures to turnkey infrastructure projects, delivered with quality, safety, and precision.",
+    "Explore our comprehensive portfolio of completed civil and industrial construction projects. From water-retaining structures to factories and commercial buildings, delivered with quality, safety, and precision.",
   keywords: [
-    "Shubh Construction projects",
-    "civil construction projects",
-    "industrial construction portfolio",
-    "ETP STP construction projects",
-    "water retaining structures",
-    "construction company projects",
+    "construction projects",
+    "civil engineering projects",
+    "industrial build portfolio",
+    "factory construction",
+    "warehouse projects",
+    "infrastructure development",
+    "project showcase",
+    "completed works",
+    "construction contractor portfolio",
   ],
   alternates: {
     canonical: buildUrl("/project"),
   },
   openGraph: {
-    title: "Our Projects | Shubh Construction",
+    title: "Projects Portfolio | Shubh Construction",
     description:
-      "A showcase of completed civil and industrial construction projects delivered by Shubh Construction with excellence.",
+      "Discover our portfolio of successfully completed civil and industrial construction projects delivered with excellence and precision.",
     url: buildUrl("/project"),
     siteName: "Shubh Construction",
     images: [
@@ -32,16 +35,17 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Shubh Construction Projects Portfolio",
+        alt: "Shubh Construction Projects Portfolio – Civil & Industrial Excellence",
       },
     ],
     type: "website",
+    locale: "en_IN",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Our Projects | Shubh Construction",
+    title: "Projects Portfolio | Shubh Construction",
     description:
-      "View our portfolio of civil and industrial construction projects delivered with quality and reliability.",
+      "See our track record of successful civil and industrial construction projects delivered with quality.",
     images: ["/og-image.png"],
   },
 };

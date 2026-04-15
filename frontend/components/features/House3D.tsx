@@ -213,7 +213,7 @@ export default function House3D({ onBack }: House3DProps) {
           setColor("#EF4444")
           setIsAutoRotate(false)
         }}
-        className="w-full px-4 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-all flex items-center justify-center gap-2"
+        className="w-full px-4 py-3 bg-white border-2 border-red-600 text-red-600 font-semibold rounded-lg hover:bg-red-600 hover:text-white transition-all flex items-center justify-center gap-2"
       >
         <RotateCw size={20} />
         Reset View

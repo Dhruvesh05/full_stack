@@ -7,23 +7,27 @@ import { SITE_URL } from "@/utils/config";
 export const metadata: Metadata = {
   title: "Shubh Construction | Trusted Civil & Industrial Construction Company",
   description:
-    "Shubh Construction is a trusted civil and industrial construction company delivering quality projects including factories, warehouses, commercial buildings, and infrastructure works across India.",
+    "Shubh Construction is a trusted civil and industrial construction company delivering quality projects including factories, warehouses, and infrastructure development across Gujarat and India.",
   keywords: [
     "Shubh Construction",
     "civil construction company",
-    "industrial construction",
+    "industrial construction services",
     "commercial buildings",
     "construction company in India",
-    "industrial contractors",
+    "factory construction",
+    "warehouse construction",
+    "ETP STP construction",
+    "construction contractors",
+    "Bharuch builders",
   ],
   metadataBase: new URL(SITE_URL),
   alternates: {
     canonical: SITE_URL,
   },
   openGraph: {
-    title: "Shubh Construction | Civil & Industrial Experts",
+    title: "Shubh Construction | Civil & Industrial Excellence",
     description:
-      "Delivering excellence in civil and industrial construction with quality, safety, and timely delivery.",
+      "Delivering excellence in civil and industrial construction with quality, safety, and timely delivery since 2017.",
     url: SITE_URL,
     siteName: "Shubh Construction",
     images: [
@@ -35,12 +39,13 @@ export const metadata: Metadata = {
       },
     ],
     type: "website",
+    locale: "en_IN",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Shubh Construction",
+    title: "Shubh Construction | Civil & Industrial Leaders",
     description:
-      "Trusted civil and industrial construction company delivering quality infrastructure projects.",
+      "Trusted construction partner for industrial facilities and infrastructure projects.",
     images: ["/og-image.png"],
   },
 };

@@ -287,7 +287,7 @@ export default function ProjectDetailModal({ project, isOpen, onClose }: Project
           <div className="mt-8 flex justify-center">
             <button
               onClick={onClose}
-              className="bg-red-600 text-white px-8 py-3 rounded-lg hover:bg-red-700 transition-colors font-medium"
+              className="bg-white border-2 border-red-600 text-red-600 px-8 py-3 rounded-lg hover:bg-red-600 hover:text-white transition-colors font-medium"
             >
               Close
             </button>
