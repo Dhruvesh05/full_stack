@@ -114,7 +114,7 @@ DATABASE_HOST=db.rkajmckgmdzppjjobcmv.supabase.co
 DATABASE_PORT=5432
 DATABASE_NAME=postgres
 DATABASE_USER=postgres
-DATABASE_PASSWORD=Dhruvp@tel8775
+DATABASE_PASSWORD=ASD@ertyuiop19
 ```
 
 **All other systems:** ✅ Configured and working
